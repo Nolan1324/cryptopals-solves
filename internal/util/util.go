@@ -1,6 +1,12 @@
 package util
 
-import "strings"
+import (
+	"bufio"
+	"encoding/base64"
+	"log"
+	"os"
+	"strings"
+)
 
 func IsAlpha(c byte) bool {
 	return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')
@@ -24,4 +30,26 @@ func IsSentenceAscii(c byte) bool {
 
 func IsVisibleAscii(c byte) bool {
 	return (32 <= c && c <= 126) || c == '\r' || c == '\n'
+}
+
+func ReadBase64File(filename string) []byte {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatalf("error opening file: %v\n", err)
+	}
+	defer file.Close()
+
+	var buf []byte
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		decoded, err := base64.StdEncoding.DecodeString(line)
+		if err != nil {
+			log.Fatalf("error \n")
+		}
+		buf = append(buf, decoded...)
+	}
+
+	return buf
 }
