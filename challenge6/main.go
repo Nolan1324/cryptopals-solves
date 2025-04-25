@@ -3,8 +3,6 @@ package main
 import (
 	"bufio"
 	"cryptopals/internal/crack"
-	"cryptopals/internal/histogram"
-	"cryptopals/internal/ops"
 	"encoding/base64"
 	"fmt"
 	"log"
@@ -35,21 +33,8 @@ func loadFile(filename string) []byte {
 
 func main() {
 	buf := loadFile("6.txt")
-	keySizes := crack.GuessXorKeySizes(buf, 2, 100)
-	keySizes = keySizes[:10]
 
-	var bestGuess []byte
-	var bestScore float64
-	for _, keySize := range keySizes {
-		key := crack.CrackRepeatingKeyXor(buf, keySize.Size)
-		guess := ops.RepeatingKeyXor(buf, key)
-		score := histogram.Score(guess)
-		// fmt.Printf("%v\n", histogram.Score(guess))
-		if score > bestScore {
-			bestGuess = guess
-			bestScore = score
-		}
-	}
+	guess := crack.CrackRepeatingKeyXor(buf, 2, 100, 7)
 
-	fmt.Printf("%s\n", bestGuess)
+	fmt.Printf("%s\n", guess)
 }

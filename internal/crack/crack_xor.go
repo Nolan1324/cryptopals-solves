@@ -59,7 +59,7 @@ func GuessXorKeySizes(buf []byte, min int, max int) []KeySize {
 	return keySizes
 }
 
-func CrackRepeatingKeyXor(buf []byte, keySize int) []byte {
+func CrackRepeatingKeyXorGivenKeySize(buf []byte, keySize int) []byte {
 	key := make([]byte, 0, keySize)
 	for offset := 0; offset < keySize; offset++ {
 		newBuf := make([]byte, 0, len(buf)/keySize+1)
@@ -70,4 +70,23 @@ func CrackRepeatingKeyXor(buf []byte, keySize int) []byte {
 		key = append(key, keyByte)
 	}
 	return key
+}
+
+func CrackRepeatingKeyXor(buf []byte, minKeySize int, maxKeySize int, topNumKeys int) []byte {
+	keySizes := GuessXorKeySizes(buf, minKeySize, maxKeySize)
+	keySizes = keySizes[:topNumKeys]
+
+	var bestGuess []byte
+	var bestScore float64
+	for _, keySize := range keySizes {
+		key := CrackRepeatingKeyXorGivenKeySize(buf, keySize.Size)
+		guess := ops.RepeatingKeyXor(buf, key)
+		score := histogram.Score(guess)
+		if score > bestScore {
+			bestGuess = guess
+			bestScore = score
+		}
+	}
+
+	return bestGuess
 }
