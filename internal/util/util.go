@@ -18,6 +18,10 @@ func IsPunctuation(c byte) bool {
 	return strings.Contains(" !@#$%^&*()-=_+[]{}\\|;':\",./<>?", string(rune(c)))
 }
 
-func IsWordChar(c byte) bool {
-	return IsAlphanumeric(c) || IsPunctuation(c)
+func IsSentenceAscii(c byte) bool {
+	return IsAlphanumeric(c) || strings.Contains(" \"',.\n\r", string(rune(c)))
+}
+
+func IsVisibleAscii(c byte) bool {
+	return (32 <= c && c <= 126) || c == '\r' || c == '\n'
 }
