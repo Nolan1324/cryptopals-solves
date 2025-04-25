@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"cryptopals/internal/crack"
 	"cryptopals/internal/enc"
-	"cryptopals/internal/util"
 	"fmt"
 	"log"
 	"os"
@@ -24,7 +23,7 @@ func main() {
 	for scanner.Scan() {
 		line := scanner.Text()
 		bytes := enc.HexDecode([]byte(line))
-		guess, score := crack.CrackSingleXor(bytes, util.IsSentenceAscii)
+		guess, _, score := crack.CrackSingleXor(bytes)
 		if score > best_score {
 			best_score = score
 			best_guess = guess
