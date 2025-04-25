@@ -49,7 +49,7 @@ func CrackSingleXor(buf []byte, isValidChar func(byte) bool) ([]byte, float64) {
 	var best_guess []byte
 	var best_score float64
 	for i := 0; i < 256; i++ {
-		guess := ops.XorByte(buf, byte(i))
+		guess := ops.XorSingleByte(buf, byte(i))
 
 		score := FrequencyScore(guess, isValidChar)
 		if score > best_score {

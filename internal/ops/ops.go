@@ -2,7 +2,7 @@ package ops
 
 import "fmt"
 
-func XorByte(buf []byte, c byte) []byte {
+func XorSingleByte(buf []byte, c byte) []byte {
 	output := make([]byte, len(buf))
 	for i := range buf {
 		output[i] = buf[i] ^ c
@@ -11,7 +11,7 @@ func XorByte(buf []byte, c byte) []byte {
 	return output
 }
 
-func Xor(buf1 []byte, buf2 []byte) ([]byte, error) {
+func XorTwoBuffers(buf1 []byte, buf2 []byte) ([]byte, error) {
 	if len(buf1) != len(buf2) {
 		return nil, fmt.Errorf("buffers differ in length")
 	}
