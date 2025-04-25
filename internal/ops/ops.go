@@ -23,3 +23,14 @@ func XorTwoBuffers(buf1 []byte, buf2 []byte) ([]byte, error) {
 
 	return output, nil
 }
+
+func RepeatingKeyXor(buf []byte, key []byte) []byte {
+	output := make([]byte, len(buf))
+
+	k := len(key)
+	for i := range buf {
+		output[i] = buf[i] ^ key[i%k]
+	}
+
+	return output
+}
