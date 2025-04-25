@@ -1,38 +1,24 @@
 package main
 
 import (
-	"bufio"
 	"cryptopals/internal/crack"
-	"cryptopals/internal/enc"
+	"cryptopals/internal/util"
 	"fmt"
-	"log"
-	"os"
 )
 
 func main() {
-	file, err := os.Open("4.txt")
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-	defer file.Close()
+	strings := util.ReadHexListFile("4.txt")
 
-	var best_guess []byte
-	var best_score float64
+	var bestGuess []byte
+	var bestScore float64
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := scanner.Text()
-		bytes := enc.HexDecode([]byte(line))
+	for _, bytes := range strings {
 		guess, _, score := crack.CrackSingleXor(bytes)
-		if score > best_score {
-			best_score = score
-			best_guess = guess
+		if score > bestScore {
+			bestScore = score
+			bestGuess = guess
 		}
 	}
 
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("error reading file: %v", err)
-	}
-
-	fmt.Printf("%s\n", best_guess)
+	fmt.Printf("%s\n", bestGuess)
 }

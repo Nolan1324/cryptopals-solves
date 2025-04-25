@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"cryptopals/internal/enc"
 	"encoding/base64"
 	"log"
 	"os"
@@ -52,4 +53,23 @@ func ReadBase64File(filename string) []byte {
 	}
 
 	return buf
+}
+
+func ReadHexListFile(filename string) [][]byte {
+	file, err := os.Open(filename)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer file.Close()
+
+	var strings [][]byte
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		bytes := enc.HexDecode([]byte(line))
+		strings = append(strings, bytes)
+	}
+
+	return strings
 }
