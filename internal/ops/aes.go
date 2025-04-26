@@ -18,3 +18,13 @@ func DecryptAesEcb(buf []byte, key []byte) ([]byte, error) {
 
 	return decrypted, nil
 }
+
+func Pcks7Padding(buf []byte, bs int) []byte {
+	paddingSize := bs - (len(buf) % bs)
+	output := make([]byte, len(buf), len(buf)+paddingSize)
+	copy(output, buf)
+	for i := 0; i < paddingSize; i++ {
+		output = append(output, byte(paddingSize))
+	}
+	return output
+}
