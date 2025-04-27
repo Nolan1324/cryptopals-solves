@@ -27,6 +27,7 @@ func main() {
 		score := score(bytes, 16)
 		if score > 0 {
 			fmt.Printf("%x\n", bytes)
+			fmt.Printf("Score: %v\n", score)
 		}
 	}
 }

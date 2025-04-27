@@ -3,9 +3,10 @@ package main
 import (
 	"cryptopals/internal/ops"
 	"fmt"
+	"strconv"
 )
 
 func main() {
 	output := ops.Pcks7Padding([]byte("YELLOW SUBMARINE"), 20)
-	fmt.Printf("%x\n", output)
+	fmt.Printf("%s\n", strconv.Quote(string(output)))
 }

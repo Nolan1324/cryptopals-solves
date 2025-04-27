@@ -24,7 +24,7 @@ func CrackSingleXor(buf []byte) ([]byte, byte, float64) {
 	var bestScore float64
 	var bestKey byte
 	for i := 0; i < 256; i++ {
-		guess := ops.XorSingleByte(buf, byte(i))
+		guess := ops.XorByte(buf, byte(i))
 
 		score := histogram.Score(guess)
 		if score > bestScore {

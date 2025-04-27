@@ -44,10 +44,7 @@ func EncryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 	encrypted := make([]byte, len(buf))
 	bs := cipher.BlockSize()
 	for i := 0; i < len(buf); i += bs {
-		block, err := XorTwoBuffers(prevCiphertextBlock, buf[i:i+bs])
-		if err != nil {
-			return nil, err
-		}
+		block := XorBytes(prevCiphertextBlock, buf[i:i+bs])
 		cipher.Encrypt(encrypted[i:i+bs], block)
 		prevCiphertextBlock = encrypted[i : i+bs]
 	}
@@ -66,11 +63,8 @@ func DecryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 	bs := cipher.BlockSize()
 	for i := 0; i < len(buf); i += bs {
 		cipher.Decrypt(decrypted[i:i+bs], buf[i:i+bs])
-		block, err := XorTwoBuffers(prevCiphertextBlock, decrypted[i:i+bs])
+		block := XorBytes(prevCiphertextBlock, decrypted[i:i+bs])
 		copy(decrypted[i:i+bs], block)
-		if err != nil {
-			return nil, err
-		}
 		prevCiphertextBlock = buf[i : i+bs]
 	}
 
