@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cryptopals/internal/ops"
+	"cryptopals/internal/cipherx"
 	"cryptopals/internal/util"
 	"fmt"
 )
@@ -9,7 +9,7 @@ import (
 func main() {
 	buf := util.ReadBase64File("7.txt")
 
-	output, _ := ops.DecryptAesEcb(buf, []byte("YELLOW SUBMARINE"))
+	output, _ := cipherx.DecryptAesEcb(buf, []byte("YELLOW SUBMARINE"))
 
 	fmt.Printf("%s\n", output)
 }

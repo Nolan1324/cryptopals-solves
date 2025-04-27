@@ -1,8 +1,8 @@
 package crack
 
 import (
+	"cryptopals/internal/cipherx"
 	"cryptopals/internal/histogram"
-	"cryptopals/internal/ops"
 	"log"
 	"sort"
 
@@ -24,7 +24,7 @@ func CrackSingleXor(buf []byte) ([]byte, byte, float64) {
 	var bestScore float64
 	var bestKey byte
 	for i := 0; i < 256; i++ {
-		guess := ops.XorByte(buf, byte(i))
+		guess := cipherx.XorByte(buf, byte(i))
 
 		score := histogram.Score(guess)
 		if score > bestScore {
@@ -44,7 +44,7 @@ type KeySize struct {
 func GuessXorKeySizes(buf []byte, min int, max int) []KeySize {
 	var keySizes []KeySize
 	for keySize := min; keySize <= max; keySize++ {
-		dist, err := ops.EditDistance(buf[0:keySize], buf[keySize:2*keySize])
+		dist, err := cipherx.EditDistance(buf[0:keySize], buf[keySize:2*keySize])
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -80,7 +80,7 @@ func CrackRepeatingKeyXor(buf []byte, minKeySize int, maxKeySize int, topNumKeys
 	var bestScore float64
 	for _, keySize := range keySizes {
 		key := CrackRepeatingKeyXorGivenKeySize(buf, keySize.Size)
-		guess := ops.RepeatingKeyXor(buf, key)
+		guess := cipherx.RepeatingKeyXor(buf, key)
 		score := histogram.Score(guess)
 		if score > bestScore {
 			bestGuess = guess
