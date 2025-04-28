@@ -12,7 +12,7 @@ func editDistanceByte(a byte, b byte) int {
 	return dist
 }
 
-func EditDistance(buf1 []byte, buf2 []byte) (int, error) {
+func EditDistance(buf1 []byte, buf2 []byte) int {
 	if len(buf1) != len(buf2) {
 		panic("buffers differ in length")
 	}
@@ -22,5 +22,5 @@ func EditDistance(buf1 []byte, buf2 []byte) (int, error) {
 		dist += editDistanceByte(buf1[i], buf2[i])
 	}
 
-	return dist, nil
+	return dist
 }

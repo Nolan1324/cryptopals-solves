@@ -3,7 +3,6 @@ package crack
 import (
 	"cryptopals/internal/cipherx"
 	"cryptopals/internal/histogram"
-	"log"
 	"sort"
 
 	"gonum.org/v1/gonum/mat"
@@ -45,10 +44,7 @@ type KeySize struct {
 func GuessXorKeySizes(buf []byte, min int, max int) []KeySize {
 	var keySizes []KeySize
 	for keySize := min; keySize <= max; keySize++ {
-		dist, err := cipherx.EditDistance(buf[0:keySize], buf[keySize:2*keySize])
-		if err != nil {
-			log.Fatalln(err)
-		}
+		dist := cipherx.EditDistance(buf[0:keySize], buf[keySize:2*keySize])
 		distNorm := float32(dist) / float32(keySize)
 		keySizes = append(keySizes, KeySize{Size: keySize, EditDistance: distNorm})
 	}
