@@ -28,3 +28,12 @@ func TestPcks7PaddingAligned(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestPcks7AddRemove(t *testing.T) {
+	text := []byte("YELLOW SUBMARINE")
+	padded := Pcks7Padding(text, 20)
+	unpadded := RemovePcks7Padding(padded)
+	if !bytes.Equal(text, unpadded) {
+		t.Errorf("original text %q does not match unpadded text %q", text, unpadded)
+	}
+}

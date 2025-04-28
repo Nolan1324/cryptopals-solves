@@ -79,3 +79,8 @@ func Pcks7Padding(buf []byte, bs int) []byte {
 	}
 	return buf
 }
+
+func RemovePcks7Padding(buf []byte) []byte {
+	numPadding := int(buf[len(buf)-1])
+	return buf[:len(buf)-numPadding]
+}
