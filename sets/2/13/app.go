@@ -37,7 +37,7 @@ func (a Application) EncryptedProfileFor(email string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	profile := cipherx.Pcks7Padding([]byte(profileStr), 16)
+	profile := cipherx.AddPcks7Padding([]byte(profileStr), 16)
 	ct, err := cipherx.EncryptAesEcb(profile, a.key)
 	if err != nil {
 		panic(err)

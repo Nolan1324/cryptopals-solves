@@ -22,7 +22,7 @@ func (o Ch12Oracle) Encrypt(userPlaintext []byte) []byte {
 	buf := make([]byte, 0, len(userPlaintext)+len(o.plaintext)+bs)
 	buf = append(buf, userPlaintext...)
 	buf = append(buf, o.plaintext...)
-	buf = cipherx.Pcks7Padding(buf, bs)
+	buf = cipherx.AddPcks7Padding(buf, bs)
 
 	output, err := cipherx.EncryptAesEcb(buf, o.key)
 	if err != nil {

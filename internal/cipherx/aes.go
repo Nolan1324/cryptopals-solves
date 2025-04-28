@@ -72,7 +72,7 @@ func DecryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 	return decrypted, nil
 }
 
-func Pcks7Padding(buf []byte, bs int) []byte {
+func AddPcks7Padding(buf []byte, bs int) []byte {
 	paddingSize := bs - (len(buf) % bs)
 	for i := 0; i < paddingSize; i++ {
 		buf = append(buf, byte(paddingSize))
