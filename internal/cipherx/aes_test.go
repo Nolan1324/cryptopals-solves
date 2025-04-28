@@ -20,3 +20,11 @@ func TestPcks7Padding(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestPcks7PaddingAligned(t *testing.T) {
+	// When aligned to block, padding should still pad a block of \x10's
+	output := Pcks7Padding([]byte("0123456789ABCDEF"), 16)
+	if !bytes.Equal(output, []byte("0123456789ABCDEF\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10\x10")) {
+		t.Fail()
+	}
+}

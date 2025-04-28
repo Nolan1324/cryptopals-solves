@@ -3,32 +3,26 @@ package main
 import (
 	"cryptopals/internal/cipherx"
 	"cryptopals/internal/crack"
+	"cryptopals/internal/randx"
 	"fmt"
 	"math/rand/v2"
 )
 
-func randRange(min, max int) int {
-	return rand.IntN(max-min) + min
+type Ch11Oracle struct {
+	keySize int
+	isEcb   bool
 }
 
-func randByte() byte {
-	return byte(rand.UintN(256))
+func makeOracle(keySize int) Ch11Oracle {
+	return Ch11Oracle{keySize: keySize, isEcb: rand.IntN(2) == 0}
 }
 
-func randBytes(len int) []byte {
-	var bytes []byte
-	for i := 0; i < len; i++ {
-		bytes = append(bytes, randByte())
-	}
-	return bytes
-}
-
-func encryptionOracle(plaintext []byte) ([]byte, bool) {
+func (o Ch11Oracle) encrypt(plaintext []byte) []byte {
 	const bs = 16
 
 	appendRandBytes := func(buf []byte) {
-		for i := 0; i < randRange(5, 11); i++ {
-			buf = append(buf, randByte())
+		for i := 0; i < randx.RandRange(5, 11); i++ {
+			buf = append(buf, randx.RandByte())
 		}
 	}
 
@@ -38,32 +32,32 @@ func encryptionOracle(plaintext []byte) ([]byte, bool) {
 	appendRandBytes(buf)
 	buf = cipherx.Pcks7Padding(buf, bs)
 
-	key := randBytes(bs)
+	key := randx.RandBytes(o.keySize)
 
-	isEcb := rand.IntN(2) == 0
 	var output []byte
 	var err error
-	if isEcb {
+	if o.isEcb {
 		output, err = cipherx.EncryptAesEcb(buf, key)
 	} else {
-		output, err = cipherx.EncryptAesCbc(buf, key, randBytes(bs))
+		output, err = cipherx.EncryptAesCbc(buf, key, randx.RandBytes(bs))
 	}
 
 	if err != nil {
 		panic(err)
 	}
 
-	return output, isEcb
+	return output
 }
 
 func main() {
-	ciphertext, isEcb := encryptionOracle([]byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+	oracle := makeOracle(16)
+	ciphertext := oracle.encrypt([]byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
 	if crack.HasRepeatingBlock(ciphertext, 16) {
 		fmt.Printf("Detected ECB\n")
 	} else {
 		fmt.Printf("Detected CBC\n")
 	}
-	if isEcb {
+	if oracle.isEcb {
 		fmt.Printf("True answer: ECB\n")
 	} else {
 		fmt.Printf("True answer: CBC\n")
