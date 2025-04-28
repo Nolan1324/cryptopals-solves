@@ -44,7 +44,8 @@ func EncryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 	encrypted := make([]byte, len(buf))
 	bs := cipher.BlockSize()
 	for i := 0; i < len(buf); i += bs {
-		block := XorBytes(prevCiphertextBlock, buf[i:i+bs])
+		block := make([]byte, bs)
+		XorBytes(block, prevCiphertextBlock, buf[i:i+bs])
 		cipher.Encrypt(encrypted[i:i+bs], block)
 		prevCiphertextBlock = encrypted[i : i+bs]
 	}
@@ -62,9 +63,9 @@ func DecryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 	decrypted := make([]byte, len(buf))
 	bs := cipher.BlockSize()
 	for i := 0; i < len(buf); i += bs {
-		cipher.Decrypt(decrypted[i:i+bs], buf[i:i+bs])
-		block := XorBytes(prevCiphertextBlock, decrypted[i:i+bs])
-		copy(decrypted[i:i+bs], block)
+		block := make([]byte, bs)
+		cipher.Decrypt(block, buf[i:i+bs])
+		XorBytes(decrypted[i:i+bs], prevCiphertextBlock, block)
 		prevCiphertextBlock = buf[i : i+bs]
 	}
 
@@ -73,10 +74,8 @@ func DecryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 
 func Pcks7Padding(buf []byte, bs int) []byte {
 	paddingSize := bs - (len(buf) % bs)
-	output := make([]byte, len(buf), len(buf)+paddingSize)
-	copy(output, buf)
 	for i := 0; i < paddingSize; i++ {
-		output = append(output, byte(paddingSize))
+		buf = append(buf, byte(paddingSize))
 	}
-	return output
+	return buf
 }

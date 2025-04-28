@@ -1,34 +1,35 @@
 package cipherx
 
-func XorByte(buf []byte, c byte) []byte {
-	output := make([]byte, len(buf))
-	for i := range buf {
-		output[i] = buf[i] ^ c
+func XorByte(dst []byte, src []byte, c byte) {
+	if len(dst) < len(src) {
+		panic("dst buffer is smaller than src")
 	}
 
-	return output
+	for i := range src {
+		dst[i] = src[i] ^ c
+	}
 }
 
-func XorBytes(buf1 []byte, buf2 []byte) []byte {
-	if len(buf1) != len(buf2) {
-		panic("buffers differ in length")
+func XorBytes(dst []byte, src1 []byte, src2 []byte) {
+	if len(src1) != len(src2) {
+		panic("src buffers differ in length")
+	}
+	if len(dst) < len(src1) {
+		panic("dst buffer is smaller than src")
 	}
 
-	output := make([]byte, len(buf1))
-	for i := range buf1 {
-		output[i] = buf1[i] ^ buf2[i]
+	for i := range src1 {
+		dst[i] = src1[i] ^ src2[i]
 	}
-
-	return output
 }
 
-func RepeatingKeyXor(buf []byte, key []byte) []byte {
-	output := make([]byte, len(buf))
+func RepeatingKeyXor(dst []byte, src []byte, key []byte) {
+	if len(dst) < len(src) {
+		panic("dst buffer is smaller than src")
+	}
 
 	k := len(key)
-	for i := range buf {
-		output[i] = buf[i] ^ key[i%k]
+	for i := range src {
+		dst[i] = src[i] ^ key[i%k]
 	}
-
-	return output
 }

@@ -24,7 +24,8 @@ func CrackSingleXor(buf []byte) ([]byte, byte, float64) {
 	var bestScore float64
 	var bestKey byte
 	for i := 0; i < 256; i++ {
-		guess := cipherx.XorByte(buf, byte(i))
+		guess := make([]byte, len(buf))
+		cipherx.XorByte(guess, buf, byte(i))
 
 		score := histogram.Score(guess)
 		if score > bestScore {
@@ -80,7 +81,8 @@ func CrackRepeatingKeyXor(buf []byte, minKeySize int, maxKeySize int, topNumKeys
 	var bestScore float64
 	for _, keySize := range keySizes {
 		key := CrackRepeatingKeyXorGivenKeySize(buf, keySize.Size)
-		guess := cipherx.RepeatingKeyXor(buf, key)
+		guess := make([]byte, len(buf))
+		cipherx.RepeatingKeyXor(guess, buf, key)
 		score := histogram.Score(guess)
 		if score > bestScore {
 			bestGuess = guess
