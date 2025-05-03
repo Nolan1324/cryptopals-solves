@@ -88,7 +88,7 @@ func RemovePcks7Padding(buf []byte) ([]byte, error) {
 	}
 	paddingByte := buf[len(buf)-1]
 	paddingLen := int(paddingByte)
-	if len(buf) < paddingLen {
+	if paddingLen < 1 || paddingLen > len(buf) {
 		return buf, err
 	}
 	for _, b := range buf[len(buf)-paddingLen:] {

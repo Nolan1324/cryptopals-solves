@@ -46,6 +46,10 @@ func TestPcks7RemoveErrors(t *testing.T) {
 	if err == nil {
 		t.Error("remove padding on empty string does not return error")
 	}
+	_, err = RemovePcks7Padding([]byte("\x00"))
+	if err == nil {
+		t.Error("remove padding on invalid padding does not return error")
+	}
 	_, err = RemovePcks7Padding([]byte("\x02"))
 	if err == nil {
 		t.Error("remove padding on invalid padding does not return error")
