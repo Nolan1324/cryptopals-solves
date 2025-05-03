@@ -1,6 +1,10 @@
 package randx
 
-import "math/rand/v2"
+import (
+	crand "crypto/rand"
+	"io"
+	"math/rand/v2"
+)
 
 // RandRange returns a random integer in the half-open interval [min, max). It panics if max < min.
 func RandRange(min, max int) int {
@@ -14,9 +18,10 @@ func RandByte() byte {
 
 // RandBytes returns len random bytes
 func RandBytes(len int) []byte {
-	var bytes []byte
-	for i := 0; i < len; i++ {
-		bytes = append(bytes, RandByte())
+	bytes := make([]byte, len)
+	_, err := io.ReadFull(crand.Reader, bytes)
+	if err != nil {
+		panic(err)
 	}
 	return bytes
 }
