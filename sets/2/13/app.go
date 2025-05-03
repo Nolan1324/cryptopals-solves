@@ -50,7 +50,10 @@ func (a Application) IsAdmin(encryptedProfile []byte) (bool, error) {
 	if err != nil {
 		panic(err)
 	}
-	profile := cipherx.RemovePcks7Padding(pt)
+	profile, err := cipherx.RemovePcks7Padding(pt)
+	if err != nil {
+		return false, fmt.Errorf("decrypting profile: %w", err)
+	}
 	vals, err := url.ParseQuery(string(profile))
 	if err != nil {
 		return false, fmt.Errorf("parsing profile: %w", err)

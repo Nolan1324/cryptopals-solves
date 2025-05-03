@@ -2,6 +2,7 @@ package cipherx
 
 import (
 	"crypto/aes"
+	"errors"
 )
 
 func EncryptAesEcb(buf []byte, key []byte) ([]byte, error) {
@@ -80,7 +81,20 @@ func AddPcks7Padding(buf []byte, bs int) []byte {
 	return buf
 }
 
-func RemovePcks7Padding(buf []byte) []byte {
-	numPadding := int(buf[len(buf)-1])
-	return buf[:len(buf)-numPadding]
+func RemovePcks7Padding(buf []byte) ([]byte, error) {
+	err := errors.New("invalid padding")
+	if len(buf) == 0 {
+		return buf, err
+	}
+	paddingByte := buf[len(buf)-1]
+	paddingLen := int(paddingByte)
+	if len(buf) < paddingLen {
+		return buf, err
+	}
+	for _, b := range buf[len(buf)-paddingLen:] {
+		if b != paddingByte {
+			return buf, err
+		}
+	}
+	return buf[:len(buf)-paddingLen], nil
 }

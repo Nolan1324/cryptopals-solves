@@ -32,8 +32,30 @@ func TestPcks7PaddingAligned(t *testing.T) {
 func TestPcks7AddRemove(t *testing.T) {
 	text := []byte("YELLOW SUBMARINE")
 	padded := AddPcks7Padding(text, 20)
-	unpadded := RemovePcks7Padding(padded)
+	unpadded, err := RemovePcks7Padding(padded)
+	if err != nil {
+		t.Error(err)
+	}
 	if !bytes.Equal(text, unpadded) {
 		t.Errorf("original text %q does not match unpadded text %q", text, unpadded)
+	}
+}
+
+func TestPcks7RemoveErrors(t *testing.T) {
+	_, err := RemovePcks7Padding([]byte{})
+	if err == nil {
+		t.Error("remove padding on empty string does not return error")
+	}
+	_, err = RemovePcks7Padding([]byte("\x02"))
+	if err == nil {
+		t.Error("remove padding on invalid padding does not return error")
+	}
+	_, err = RemovePcks7Padding([]byte("ICE ICE BABY\x05\x05\x05\x05"))
+	if err == nil {
+		t.Error("remove padding on invalid padding does not return error")
+	}
+	_, err = RemovePcks7Padding([]byte("ICE ICE BABY\x01\x02\x03\x04"))
+	if err == nil {
+		t.Error("remove padding on invalid padding does not return error")
 	}
 }

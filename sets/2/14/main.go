@@ -34,7 +34,7 @@ func detectPrefixLength(oracle Ch14Oracle, bs int) int {
 				// Other than the zero bytes that formed the zero block, numZeroBytes - bs
 				// joined with the end of the prefix to complete the final prefix block
 				// So the prefix length is blockOffset (where the prefix block stops and the zero block starts)
-				// starts minus these extra zero bytes in the prefix block
+				// minus these extra zero bytes in the prefix block
 				return blockOffset - (numZeroBytes - bs)
 			}
 		}
