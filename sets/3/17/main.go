@@ -40,6 +40,9 @@ func crackCbcBlock(prevBlock []byte, block []byte, app Application) []byte {
 				found = true
 			}
 		}
+		if !found {
+			log.Fatalf("no solution found for plaintext block byte i=%v", i)
+		}
 		// Tamper bytes [i, bs) to have the correct padding byte for the next iteration
 		for j := i; j < bs; j++ {
 			iv[j] = prevBlock[j] ^ decrypted[j] ^ byte(numPadding+1)
