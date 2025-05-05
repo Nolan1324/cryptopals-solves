@@ -1,26 +1,46 @@
 package histogram
 
 import (
-	_ "embed"
+	"bufio"
+	"embed"
 	"log"
 	"strconv"
-	"strings"
 
 	"gonum.org/v1/gonum/mat"
 )
 
-//go:embed histogram.txt
-var histogramBytes []byte
+type Histogram = *mat.VecDense
 
-var histogramVec *mat.VecDense
+//go:embed *.txt
+var histogramsFolder embed.FS
 
-func initHistogram() {
-	if histogramVec != nil {
+var expectedHistogram Histogram
+var expectedHistogramFirstChars Histogram
+
+func NewHistogram() Histogram {
+	return mat.NewVecDense(128, nil)
+}
+
+func initHistograms() {
+	if expectedHistogram != nil {
 		return
 	}
 
+	expectedHistogram = loadHistogramFile("histogram.txt")
+	expectedHistogramFirstChars = loadHistogramFile("histogram_first_chars.txt")
+}
+
+func loadHistogramFile(histogramFilename string) Histogram {
+	file, err := histogramsFolder.Open(histogramFilename)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer file.Close()
+
 	var data []float64
-	for _, line := range strings.Split(string(histogramBytes), "\n") {
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
 		value, err := strconv.ParseInt(line, 0, 0)
 		if err != nil {
 			log.Fatal(err)
@@ -28,34 +48,72 @@ func initHistogram() {
 		data = append(data, float64(value))
 	}
 
-	histogramVec = mat.NewVecDense(len(data), data)
-	histogramVec.ScaleVec(1/histogramVec.Norm(1), histogramVec)
-}
-
-func Score(guess []byte) float64 {
-	initHistogram()
-
-	vec := mat.NewVecDense(128, make([]float64, 128))
-
-	numLetters := 0
-	for _, c := range guess {
-		if c >= 128 {
-			return 0
-		}
-		index := int(c)
-		vec.SetVec(index, vec.AtVec(index)+1)
-		numLetters++
+	if len(data) != 128 {
+		log.Fatalf("histogram in %v is wrong size", histogramFilename)
 	}
 
-	var histogramVecScaled mat.VecDense
-	histogramVecScaled.ScaleVec(float64(numLetters), histogramVec)
-	histogramVecScaled.ScaleVec(1/histogramVecScaled.Norm(2), &histogramVecScaled)
+	histogram := mat.NewVecDense(len(data), data)
+	histogram.ScaleVec(1/histogram.Norm(1), histogram)
 
-	vec.ScaleVec(1/vec.Norm(2), vec)
+	return histogram
+}
 
-	return mat.Dot(vec, &histogramVecScaled)
+func MakeCaseInsensitive(h Histogram) Histogram {
+	histNew := NewHistogram()
+	histNew.CopyVec(h)
+	for c := 'A'; c <= 'Z'; c++ {
+		upperIndex := int(c)
+		lowerIndex := int(c) + (int('a') - int('A'))
 
-	// vec.ScaleVec(1/vec.Norm(1), vec)
-	// vec.SubVec(histogramVec, vec)
-	// return 1 / vec.Norm(1)
+		histNew.SetVec(upperIndex, histNew.AtVec(upperIndex)+histNew.AtVec(lowerIndex))
+		histNew.SetVec(lowerIndex, 0)
+	}
+	return histNew
+}
+
+func incrementFrequency(h Histogram, character byte) {
+	index := int(character)
+	h.SetVec(index, h.AtVec(index)+1)
+}
+
+func ComputeHistogram(text []byte) Histogram {
+	vec := NewHistogram()
+
+	for _, c := range text {
+		if c >= 128 {
+			return nil
+		}
+		incrementFrequency(vec, c)
+	}
+
+	return vec
+}
+
+func score(observedHistogram Histogram, expectedHistogram Histogram) float64 {
+	if observedHistogram == nil {
+		return 0
+	}
+
+	numSamples := int(mat.Sum(observedHistogram))
+
+	expectedHistogramScaled := NewHistogram()
+	expectedHistogramScaled.ScaleVec(float64(numSamples), expectedHistogram)
+	expectedHistogramScaled.ScaleVec(1/expectedHistogramScaled.Norm(2), expectedHistogramScaled)
+
+	observedHistogramScaled := NewHistogram()
+	observedHistogramScaled.ScaleVec(1/observedHistogram.Norm(2), observedHistogram)
+
+	return mat.Dot(observedHistogramScaled, expectedHistogramScaled)
+}
+
+func Score(observedHistogram Histogram) float64 {
+	initHistograms()
+
+	return score(observedHistogram, expectedHistogram)
+}
+
+func ScoreCaseFirstCharacter(observedHistogram Histogram) float64 {
+	initHistograms()
+
+	return score(observedHistogram, expectedHistogramFirstChars)
 }

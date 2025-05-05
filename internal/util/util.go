@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"cryptopals/internal/enc"
 	"encoding/base64"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -53,6 +54,28 @@ func ReadBase64File(filename string) []byte {
 	}
 
 	return buf
+}
+
+func ReadBase64ListFile(filename string) ([][]byte, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, fmt.Errorf("when opening file: %w", err)
+	}
+	defer file.Close()
+
+	var strings [][]byte
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		decoded, err := base64.StdEncoding.DecodeString(line)
+		if err != nil {
+			return nil, fmt.Errorf("when decoding file: %w", err)
+		}
+		strings = append(strings, decoded)
+	}
+
+	return strings, nil
 }
 
 func ReadHexListFile(filename string) [][]byte {

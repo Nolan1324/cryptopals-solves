@@ -13,10 +13,10 @@ func main() {
 	var bestScore float64
 
 	for _, bytes := range strings {
-		guess, _, score := crack.CrackSingleXor(bytes)
-		if score > bestScore {
-			bestScore = score
-			bestGuess = guess
+		result := crack.CrackSingleXor(bytes)
+		if result.Score > bestScore {
+			bestScore = result.Score
+			bestGuess = result.Guess
 		}
 	}
 

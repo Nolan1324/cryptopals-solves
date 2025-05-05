@@ -6,22 +6,41 @@ import (
 	"sort"
 )
 
-func CrackSingleXor(buf []byte) ([]byte, byte, float64) {
-	var bestGuess []byte
-	var bestScore float64
-	var bestKey byte
-	for i := 0; i < 256; i++ {
+type CrackSingleXorResult struct {
+	Guess          []byte
+	Score          float64
+	Key            byte
+	GuessHistogram histogram.Histogram
+}
+
+func CrackSingleXor(buf []byte) CrackSingleXorResult {
+	return crackSingleXor(buf, nil, histogram.Score)
+}
+
+func CrackSingleXorFirstCharacter(buf []byte) CrackSingleXorResult {
+	return crackSingleXor(buf, nil, histogram.ScoreCaseFirstCharacter)
+}
+
+func crackSingleXor(buf []byte, priorHistogram histogram.Histogram, scoreFunc func(histogram.Histogram) float64) CrackSingleXorResult {
+	var result CrackSingleXorResult
+	for i := range 256 {
 		guess := make([]byte, len(buf))
 		cipherx.XorByte(guess, buf, byte(i))
 
-		score := histogram.Score(guess)
-		if score > bestScore {
-			bestScore = score
-			bestGuess = guess
-			bestKey = byte(i)
+		hist := histogram.ComputeHistogram(guess)
+		if hist == nil {
+			continue
+		}
+		combinedHist := hist
+		if priorHistogram != nil {
+			combinedHist.AddVec(hist, priorHistogram)
+		}
+		score := scoreFunc(combinedHist)
+		if score > result.Score {
+			result = CrackSingleXorResult{Score: score, Guess: guess, Key: byte(i), GuessHistogram: hist}
 		}
 	}
-	return bestGuess, bestKey, bestScore
+	return result
 }
 
 type KeySize struct {
@@ -46,13 +65,13 @@ func GuessXorKeySizes(buf []byte, min int, max int) []KeySize {
 
 func CrackRepeatingKeyXorGivenKeySize(buf []byte, keySize int) []byte {
 	key := make([]byte, 0, keySize)
-	for offset := 0; offset < keySize; offset++ {
+	for offset := range keySize {
 		newBuf := make([]byte, 0, len(buf)/keySize+1)
 		for i := offset; i < len(buf); i += keySize {
 			newBuf = append(newBuf, buf[i])
 		}
-		_, keyByte, _ := CrackSingleXor(newBuf)
-		key = append(key, keyByte)
+		result := CrackSingleXor(newBuf)
+		key = append(key, result.Key)
 	}
 	return key
 }
@@ -67,7 +86,11 @@ func CrackRepeatingKeyXor(buf []byte, minKeySize int, maxKeySize int, topNumKeys
 		key := CrackRepeatingKeyXorGivenKeySize(buf, keySize.Size)
 		guess := make([]byte, len(buf))
 		cipherx.RepeatingKeyXor(guess, buf, key)
-		score := histogram.Score(guess)
+		hist := histogram.ComputeHistogram(guess)
+		if hist == nil {
+			continue
+		}
+		score := histogram.Score(hist)
 		if score > bestScore {
 			bestGuess = guess
 			bestScore = score
