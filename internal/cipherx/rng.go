@@ -15,9 +15,9 @@ const b = uint32(0x9d2c5680)
 const c = uint32(0xefc60000)
 const f = uint32(1812433253)
 
-type mersenneTwister struct {
-	stateArray [n]uint32
-	stateIndex int
+type MersenneTwister struct {
+	StateArray [n]uint32
+	StateIndex int
 }
 
 type Rng interface {
@@ -25,28 +25,28 @@ type Rng interface {
 }
 
 func NewMersenneTwister(seed uint32) Rng {
-	var mt mersenneTwister
+	var mt MersenneTwister
 
-	mt.stateArray[0] = seed
+	mt.StateArray[0] = seed
 	for i := 1; i < n; i++ {
 		seed = f*(seed^(seed>>(w-2))) + uint32(i)
-		mt.stateArray[i] = seed
+		mt.StateArray[i] = seed
 	}
 
-	mt.stateIndex = 0
+	mt.StateIndex = 0
 
 	return &mt
 }
 
-func (mt *mersenneTwister) Rand() uint32 {
-	k := mt.stateIndex
+func (mt *MersenneTwister) Rand() uint32 {
+	k := mt.StateIndex
 
 	j := k - (n - 1)
 	if j < 0 {
 		j += n
 	}
 
-	x := (mt.stateArray[k] & uMask) | (mt.stateArray[j] & lMask)
+	x := (mt.StateArray[k] & uMask) | (mt.StateArray[j] & lMask)
 
 	xA := x >> 1
 	if x&uint32(0x00000001) != 0 {
@@ -58,14 +58,14 @@ func (mt *mersenneTwister) Rand() uint32 {
 		j += n
 	}
 
-	x = mt.stateArray[j] ^ xA
-	mt.stateArray[k] = x
+	x = mt.StateArray[j] ^ xA
+	mt.StateArray[k] = x
 	k++
 
 	if k >= n {
 		k = 0
 	}
-	mt.stateIndex = k
+	mt.StateIndex = k
 
 	y := x ^ (x >> u)
 	y = y ^ ((y << s) & b)
