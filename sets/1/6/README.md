@@ -29,7 +29,7 @@ Otherwise, these are two _different_ key bytes. Then assuming that each key bit 
 
 Now lets zoom out a bit. In the case where $s^\star | s$, we get that $S((m_i \oplus m_{i+s}) \oplus (k_{i \bmod s^\star} \oplus k_{i+s \bmod s^\star})) = S(m_i \oplus m_{i+s})$. A key insight now is that in an English plaintext, the expected value of $S(m_i \oplus m_{i+s})$ is likely lower than if the two bytes were random. As we saw before, if $x,y$ are random bytes, then $S(x \oplus y) \sim \mathrm{Bin}(8, 1/2)$ so $\mathbb{E}(S(x \oplus y)) = 4$. However, $m_i$ and $m_{i+s}$ are very likely to be lowercase ASCII letters, which typically have many identical bits. Namely, if $x,y$ are both random lowercase ASCII letters, $\mathbb{E}(S(x \oplus y))$ is about $2.47$. More specifically, the probability distribution looks like
 
-| $\mathbb{E}(S(x \oplus y))$ | 0    | 1    | 2    | 3    | 4    | 5    | 6 | 7 | 8 |
+| $S(x \oplus y)$ | 0    | 1    | 2    | 3    | 4    | 5    | 6 | 7 | 8 |
 |--------------------------|------|------|------|------|------|------|------|------|------|
 | $p$                     | 0.04 | 0.16 | 0.31 | 0.30 | 0.16 | 0.03 | 0 | 0 | 0 |
 

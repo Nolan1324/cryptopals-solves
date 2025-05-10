@@ -36,7 +36,7 @@ I played around with a few different ways to represent histograms. Initially, I 
 
 #### Expected histogram computation
 
-To compute the expected histogram, I used the `nltk` package in Python to download an English text corpus, and then simply computed the frequency of each ASCII character. This approach was able to calculate frequencies for non-word characters as well, such as `'` and `\n`. Naturally, many ASCII characters, like `\0` had a frequencies of 0.
+To compute the expected histogram, I used the `nltk` package in Python to download an English text corpus, and then simply computed the frequency of each ASCII character. This approach was able to calculate frequencies for non-word characters as well, such as `'` and `\n`. Naturally, many valid ASCII characters, like `\0`, had frequencies of 0.
 
 We can compute the observed histogram of a plaintext guess in the same way (just counting characters). The sum of the elements of the observed histogram is the length of the plaintext.
 
