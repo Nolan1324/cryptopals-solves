@@ -15,17 +15,25 @@ func main() {
 
 	oracle := makeOracle(plaintext, 16)
 
-	bs := crack.DetectEbcBlockSizeOneShot(oracle.Encrypt, 8, 256)
-	fmt.Printf("Detected EBC with block size: %v\n", bs)
+	bs := crack.DetectBlockSize(oracle.Encrypt)
+	fmt.Printf("Detected block size: %v\n", bs)
 	if bs != 16 {
-		fmt.Printf("Incorrect block size detected")
+		fmt.Printf("Incorrect block size detected\n")
 		os.Exit(1)
 	}
 
-	ctLen := crack.DetectEbcLength(oracle.Encrypt, bs)
+	isEcb := crack.DetectEcbMode(oracle.Encrypt, bs)
+	if isEcb {
+		fmt.Printf("Detected ECB mode\n")
+	} else {
+		fmt.Printf("Did not detect ECB mode\n")
+		os.Exit(1)
+	}
+
+	ctLen := crack.DetectEcbLength(oracle.Encrypt, bs)
 	fmt.Printf("Detected ciphertext length: %v\n", ctLen)
 
-	answer := crack.CrackEbc(oracle.Encrypt, bs, ctLen)
+	answer := crack.CrackEcb(oracle.Encrypt, bs, ctLen)
 	fmt.Printf("%q\n", answer)
 	if oracle.CheckAnswer(answer) {
 		fmt.Printf("Answer is correct\n")

@@ -21,7 +21,7 @@ func (o Ch11Oracle) encrypt(plaintext []byte) []byte {
 	const bs = 16
 
 	appendRandBytes := func(buf []byte) {
-		for i := 0; i < randx.RandRange(5, 11); i++ {
+		for range randx.RandRange(5, 11) {
 			buf = append(buf, randx.RandByte())
 		}
 	}
@@ -51,8 +51,7 @@ func (o Ch11Oracle) encrypt(plaintext []byte) []byte {
 
 func main() {
 	oracle := makeOracle(16)
-	ciphertext := oracle.encrypt([]byte("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
-	if crack.HasRepeatingBlock(ciphertext, 16) {
+	if crack.DetectEcbMode(oracle.encrypt, 16) {
 		fmt.Printf("Detected ECB\n")
 	} else {
 		fmt.Printf("Detected CBC\n")

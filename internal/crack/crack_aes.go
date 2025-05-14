@@ -21,29 +21,31 @@ func HasRepeatingBlock(bytes []byte, bs int) bool {
 
 type EncryptFunc func([]byte) []byte
 
-// DetectEbcBlockSizeOneShot detects if encryptFunc is using EBC and returns the block size if so.
-// Returns 0 if EBC is not detected. This function makes many calls to encryptFunc.
-// encryptFunc is expected to compute encryptFunc(plaintext) = AES_ECB(plaintext | suffix)
-func DetectEbcBlockSize(encryptFunc EncryptFunc, max int) int {
-	buf := make([]byte, max)
-	var prevFirstBlock []byte
-	for i := range buf {
-		buf[i] = 'a'
-		output := encryptFunc(buf)
-		if prevFirstBlock != nil && bytes.Equal(prevFirstBlock, output[:i]) {
-			return i
+// DetectBlockSize detects the block size of encryptFunc.
+// encryptFunc is expected to compute encryptFunc(plaintext) = BLOCK_CIPHER(prefix || plaintext || suffix)
+func DetectBlockSize(encryptFunc EncryptFunc) int {
+	originalLen := len(encryptFunc(nil))
+	for i := 1; i <= 16; i++ {
+		newLen := len(encryptFunc(make([]byte, i)))
+		if newLen > originalLen {
+			return newLen - originalLen
 		}
-		prevFirstBlock = output[:i+1]
 	}
 	return 0
 }
 
-// DetectEbcBlockSizeOneShot detects if encryptFunc is using EBC and returns the block size if so.
-// Returns 0 if EBC is not detected. This function only makes one call to encryptFunc.
-// encryptFunc is expected to compute encryptFunc(plaintext) = AES_ECB(prefix | plaintext | suffix)
+// DetectEcbMode detects if a block cipher with block size bs is using ECB mode.
+// encryptFunc is expected to compute encryptFunc(plaintext) = BLOCK_CIPHER(prefix || plaintext || suffix)
+func DetectEcbMode(encryptFunc EncryptFunc, bs int) bool {
+	return HasRepeatingBlock(encryptFunc(make([]byte, bs*4)), bs)
+}
+
+// DetectEcbBlockSizeOneShot detects if encryptFunc is using ECB and returns the block size if so.
+// Returns 0 if ECB is not detected. This function only makes one call to encryptFunc.
+// encryptFunc is expected to compute encryptFunc(plaintext) = AES_ECB(prefix || plaintext || suffix)
 // Tries all block sizes in [min, max] and returns the first one that results in a pair of consecutive identical blocks in the ciphertext.
 // min should typically be at least 8.
-func DetectEbcBlockSizeOneShot(encryptFunc EncryptFunc, min int, max int) int {
+func DetectEcbBlockSizeOneShot(encryptFunc EncryptFunc, min int, max int) int {
 	buf := make([]byte, max*3)
 	output := encryptFunc(buf)
 	for bs := min; bs <= max; bs++ {
@@ -60,16 +62,16 @@ func DetectEbcBlockSizeOneShot(encryptFunc EncryptFunc, min int, max int) int {
 	return 0
 }
 
-// DetectEbcLength detects the target text length, given a function encryptFunc of the form
-// encryptFunc(plaintext) = AES_ECB(plaintext | target_text) with a known ECB block size of bs
-func DetectEbcLength(encryptFunc EncryptFunc, bs int) int {
+// DetectEcbLength detects the target text length, given a function encryptFunc of the form
+// encryptFunc(plaintext) = AES_ECB(plaintext || target_text) with a known ECB block size of bs
+func DetectEcbLength(encryptFunc EncryptFunc, bs int) int {
 	pad16Plaintext := make([]byte, bs)
 	for i := range pad16Plaintext {
 		pad16Plaintext[i] = 0x10
 	}
 	pad16Ciphertext := encryptFunc(pad16Plaintext)[:bs]
 
-	for initialPadLen := 0; initialPadLen < bs; initialPadLen++ {
+	for initialPadLen := range bs {
 		ct := encryptFunc(make([]byte, initialPadLen))
 		if len(ct)%bs != 0 {
 			panic("length of ciphertext is not divisible by block size")
@@ -82,18 +84,18 @@ func DetectEbcLength(encryptFunc EncryptFunc, bs int) int {
 	panic("could not compute length")
 }
 
-// CrackEbc cracks the target text, given a function encryptFunc of the form
-// encryptFunc(plaintext) = AES_ECB(plaintext | target_text) with a known ECB block size of bs
+// CrackEcb cracks the target text, given a function encryptFunc of the form
+// encryptFunc(plaintext) = AES_ECB(plaintext || target_text) with a known ECB block size of bs
 // and target text length of ctLen
-func CrackEbc(encryptFunc EncryptFunc, bs int, ctLen int) []byte {
+func CrackEcb(encryptFunc EncryptFunc, bs int, ctLen int) []byte {
 	padLen := bs - 1
 	paddedGuess := make([]byte, padLen+ctLen)
 
-	for i := 0; i < ctLen; i++ {
+	for i := range ctLen {
 		paddedGuessIndex := padLen + i
 
 		blockChars := make(map[string]byte)
-		for c := 0; c < 256; c++ {
+		for c := range 256 {
 			c := byte(c)
 			paddedGuess[paddedGuessIndex] = c
 			testBlock := paddedGuess[paddedGuessIndex+1-bs : paddedGuessIndex+1]

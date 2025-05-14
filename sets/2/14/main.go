@@ -10,7 +10,7 @@ import (
 
 // findZeroBlockCiphertext finds the ciphertext associated with a block of all zeroes.
 func findZeroBlockCiphertext(oracle Ch14Oracle, bs int) []byte {
-	output := oracle.Encrypt(make([]byte, bs*3))
+	output := oracle.Encrypt(make([]byte, bs*4))
 	for i := bs; i < len(output); i += bs {
 		if bytes.Equal(output[i-bs:i], output[i:i+bs]) {
 			return output[i-bs : i]
@@ -51,16 +51,27 @@ func main() {
 
 	oracle := makeOracle(plaintext, 16)
 
-	bs := crack.DetectEbcBlockSizeOneShot(oracle.Encrypt, 8, 256)
-	fmt.Printf("Detected EBC with block size: %v\n", bs)
+	bs := crack.DetectBlockSize(oracle.Encrypt)
+	fmt.Printf("Detected block size: %v\n", bs)
 	if bs != 16 {
-		fmt.Printf("Incorrect block size detected")
+		fmt.Printf("Incorrect block size detected\n")
+		os.Exit(1)
+	}
+
+	isEcb := crack.DetectEcbMode(oracle.Encrypt, bs)
+	if isEcb {
+		fmt.Printf("Detected ECB mode\n")
+	} else {
+		fmt.Printf("Did not detect ECB mode\n")
 		os.Exit(1)
 	}
 
 	prefixLength := detectPrefixLength(oracle, bs)
 	fmt.Printf("Detected prefix length %v\n", prefixLength)
-	fmt.Printf("Correct prefix length is %v\n", len(oracle.prefix))
+	if prefixLength != len(oracle.prefix) {
+		fmt.Printf("Correct prefix length is %v\n, which does not match\n", len(oracle.prefix))
+		os.Exit(1)
+	}
 
 	encrypt := func(plaintext []byte) []byte {
 		startBlockIndex := prefixLength/bs + 1
@@ -68,10 +79,10 @@ func main() {
 		return oracle.Encrypt(append(make([]byte, prefixPaddingLen), plaintext...))[startBlockIndex*bs:]
 	}
 
-	ctLen := crack.DetectEbcLength(encrypt, bs)
+	ctLen := crack.DetectEcbLength(encrypt, bs)
 	fmt.Printf("Detected ciphertext length: %v\n", ctLen)
 
-	answer := crack.CrackEbc(encrypt, bs, ctLen)
+	answer := crack.CrackEcb(encrypt, bs, ctLen)
 	fmt.Printf("%q\n", answer)
 	if oracle.CheckAnswer(answer) {
 		fmt.Printf("Answer is correct\n")
