@@ -74,27 +74,27 @@ I wrote a few test cases to ensure that the application I implemented behaved as
 
 The key insight of this challenge is that since ECB encrypts each block independently and deterministically, we can stitch together ciphertext blocks returned from the application by `profile_for` to construct a new valid ciphertext. The challenge then becomes to determine what strings we should call `profile_for` with to get the necessary ciphertext blocks to construct a valid "admin" ciphertext.
 
-Since my application does not allow excess parameters in the profile, we must construct a ciphertext that decrypts to `email=<some_email>&uid=10&role=admin[PCKS7 PAD]`. We can get the ciphertext for `email=<some_email>&uid=10&role=user[PCKS7 PAD]` by just calling `profile_for(<some_email>)`. This contains everything we need except for `admin` at the end.
+Since my application does not allow excess parameters in the profile, we must construct a ciphertext that decrypts to `email=<some_email>&uid=10&role=admin[PKCS7 PAD]`. We can get the ciphertext for `email=<some_email>&uid=10&role=user[PKCS7 PAD]` by just calling `profile_for(<some_email>)`. This contains everything we need except for `admin` at the end.
 
-We could get the ciphertext for some string containing `admin` by including `admin` in our email, but we cannot directly get the ciphertext for `role=admin` in this way since `profile_for` forbids the `=` character in the email. Thus, to get the `role=` portion, we will instead call `profile_for(<some_email>)` in such a way so that `role=` in `email=<some_email>&uid=10&role=user[PCKS7 PAD]` lies at the end of some block. That way, we can just exclude the ciphertext block for `user[PCKS7 PAD]` when we pick and stitch the ciphertext blocks later.
+We could get the ciphertext for some string containing `admin` by including `admin` in our email, but we cannot directly get the ciphertext for `role=admin` in this way since `profile_for` forbids the `=` character in the email. Thus, to get the `role=` portion, we will instead call `profile_for(<some_email>)` in such a way so that `role=` in `email=<some_email>&uid=10&role=user[PKCS7 PAD]` lies at the end of some block. That way, we can just exclude the ciphertext block for `user[PKCS7 PAD]` when we pick and stitch the ciphertext blocks later.
 
 It happens that if we call `profile_for` with a 13-byte email, like `profile_for("mmail@foo.bar")`, we get the ciphertext for the following (new lines denote 16-byte block boundaries):
 
 ```
 email=mmail@foo.
 bar&uid=10&role=
-user[PCKS7 PAD ]
+user[PKCS7 PAD ]
 ```
 
 We can then take just the first two blocks, giving us the ciphertext for `email=mmail@foo.bar&uid=10&role=`.
 
-Now we just need the ciphertext for the block `admin[PCKS7 PAD]` (the PCKS7 padding is needed to make the string valid). If we call `profile_for("mmail@foo.admin\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B")`, we get ciphertext for
+Now we just need the ciphertext for the block `admin[PKCS7 PAD]` (the PKCS7 padding is needed to make the string valid). If we call `profile_for("mmail@foo.admin\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B\x0B")`, we get ciphertext for
 
 ```
 email=mmail@foo. 
-admin[PCKS7 pad]
+admin[PKCS7 pad]
 &uid=10&role=use
-r[PCKS7 pad    ]
+r[PKCS7 pad    ]
 ```
 
-We can then take just the second block and append it to the two ciphertext blocks we crafted earlier, giving a final valid ciphertext for `email=mmail@foo.bar&uid=10&role=admin[PCKS7 PAD]`.
+We can then take just the second block and append it to the two ciphertext blocks we crafted earlier, giving a final valid ciphertext for `email=mmail@foo.bar&uid=10&role=admin[PKCS7 PAD]`.

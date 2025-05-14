@@ -18,11 +18,11 @@
 
 ## Solution
 
-This challenge is fairly straightfoward. I implemented a `AddPcks7Padding` function to add the padding.
+This challenge is fairly straightfoward. I implemented a `AddPkcs7Padding` function to add the padding.
 
-### Semantics of `AddPcks7Padding`
+### Semantics of `AddPkcs7Padding`
 
 I debated a bit what the semantics of this function should be. Should it return a new byte buffer with the padded text? Or should it write its output to a buffer parameter? These options are easy to interpret, but both require unnecessarily copying the entire input, even though we are just adding a constant amount of padding.
 
-To avoid copying the input, one option is to have `AddPcks7Padding` take in a pointer to the input slice (`*[]byte`), append to the slice, and then modify the input slice. Another option is to keep the input as type `[]byte`, append to the slice, and then return the new slice as a `[]byte`. The latter option has the exact same semantics as `append` in the standard library, so I chose that option.
-Like `append`, the best way to use this function is like `buf = AddPcks7Padding(buf, 16)`. I gave `AddPcks7Padding` a docstring based on the existing one for `append` to communicate these semantics clearly.
+To avoid copying the input, one option is to have `AddPkcs7Padding` take in a pointer to the input slice (`*[]byte`), append to the slice, and then modify the input slice. Another option is to keep the input as type `[]byte`, append to the slice, and then return the new slice as a `[]byte`. The latter option has the exact same semantics as `append` in the standard library, so I chose that option.
+Like `append`, the best way to use this function is like `buf = AddPkcs7Padding(buf, 16)`. I gave `AddPkcs7Padding` a docstring based on the existing one for `append` to communicate these semantics clearly.

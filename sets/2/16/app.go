@@ -23,7 +23,7 @@ func (a Application) CreateData(userData string) string {
 }
 
 func (a Application) CreateDataEncrypted(userData string) ([]byte, error) {
-	data := cipherx.AddPcks7Padding([]byte(a.CreateData(userData)), 16)
+	data := cipherx.AddPkcs7Padding([]byte(a.CreateData(userData)), 16)
 	ct, err := cipherx.EncryptAesCbc(data, a.key, a.iv)
 	if err != nil {
 		return nil, err
@@ -36,7 +36,7 @@ func (a Application) IsAdmin(encryptedData []byte) (bool, error) {
 	if err != nil {
 		return false, fmt.Errorf("error decrypting data: %w", err)
 	}
-	data, err = cipherx.RemovePcks7Padding(data)
+	data, err = cipherx.RemovePkcs7Padding(data)
 	if err != nil {
 		return false, fmt.Errorf("error removing decrypted data padding: %w", err)
 	}

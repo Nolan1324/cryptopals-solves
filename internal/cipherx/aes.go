@@ -73,14 +73,14 @@ func DecryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 	return decrypted, nil
 }
 
-// AddPcks7Padding function adds PCKS7 padding to the end of a slice. If
+// AddPkcs7Padding function adds PKCS7 padding to the end of a slice. If
 // it has sufficient capacity, the destination is resliced to accommodate the
 // new elements. If it does not, a new underlying array will be allocated.
-// AddPcks7Padding returns the updated slice. It is therefore necessary to store the
-// result of AddPcks7Padding, often in the variable holding the slice itself:
+// AddPkcs7Padding returns the updated slice. It is therefore necessary to store the
+// result of AddPkcs7Padding, often in the variable holding the slice itself:
 //
 //	slice = append(slice, 16)
-func AddPcks7Padding(buf []byte, bs int) []byte {
+func AddPkcs7Padding(buf []byte, bs int) []byte {
 	paddingSize := bs - (len(buf) % bs)
 	for range paddingSize {
 		buf = append(buf, byte(paddingSize))
@@ -88,7 +88,7 @@ func AddPcks7Padding(buf []byte, bs int) []byte {
 	return buf
 }
 
-func RemovePcks7Padding(buf []byte) ([]byte, error) {
+func RemovePkcs7Padding(buf []byte) ([]byte, error) {
 	err := errors.New("invalid padding")
 	if len(buf) == 0 {
 		return buf, err

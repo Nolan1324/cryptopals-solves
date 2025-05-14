@@ -81,7 +81,7 @@ comment1=cooking
 [DATA BLOCK 3  ]
 ;comment2=%20lik
 e%20a%20pound%20
-of%20bacon[PCKS]
+of%20bacon[PKCS]
 ```
 
 Incidentally, our input is already aligned to block boundaries without adding any padding. Let $m_2, m_3$ be the two blocks we inputted. It turns out the content of these blocks does not matter too much, so I just input randomly generated letters. We want to avoid inputting any special characters because `createData` will URL encode them and thus change the length of the plaintext.
@@ -95,7 +95,7 @@ comment1=cooking
 ;admin=true;a=aa
 ;comment2=%20lik
 e%20a%20pound%20
-of%20bacon[PCKS]
+of%20bacon[PKCS]
 ```
 
 This gives `admin=true` in the string, as desired. It also causes `userdata` to equal the scrambled block, but thats fine as long as the scrambled data is valid.

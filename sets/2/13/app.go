@@ -37,7 +37,7 @@ func (a Application) EncryptedProfileFor(email string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	profile := cipherx.AddPcks7Padding([]byte(profileStr), 16)
+	profile := cipherx.AddPkcs7Padding([]byte(profileStr), 16)
 	ct, err := cipherx.EncryptAesEcb(profile, a.key)
 	if err != nil {
 		panic(err)
@@ -50,7 +50,7 @@ func (a Application) IsAdmin(encryptedProfile []byte) (bool, error) {
 	if err != nil {
 		panic(err)
 	}
-	profile, err := cipherx.RemovePcks7Padding(pt)
+	profile, err := cipherx.RemovePkcs7Padding(pt)
 	if err != nil {
 		return false, fmt.Errorf("decrypting profile: %w", err)
 	}

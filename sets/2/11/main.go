@@ -30,7 +30,7 @@ func (o Ch11Oracle) encrypt(plaintext []byte) []byte {
 	appendRandBytes(buf)
 	buf = append(buf, plaintext...)
 	appendRandBytes(buf)
-	buf = cipherx.AddPcks7Padding(buf, bs)
+	buf = cipherx.AddPkcs7Padding(buf, bs)
 
 	key := randx.RandBytes(o.keySize)
 

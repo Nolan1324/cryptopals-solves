@@ -62,7 +62,7 @@ func main() {
 		decrypted = append(decrypted, decryptedBlock...)
 		prevBlock = block
 	}
-	decrypted, err := cipherx.RemovePcks7Padding(decrypted)
+	decrypted, err := cipherx.RemovePkcs7Padding(decrypted)
 	if err != nil {
 		fmt.Printf("decrypted plaintext does not have valid padding\n")
 	}

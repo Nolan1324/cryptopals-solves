@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	output := cipherx.AddPcks7Padding([]byte("YELLOW SUBMARINE"), 20)
+	output := cipherx.AddPkcs7Padding([]byte("YELLOW SUBMARINE"), 20)
 	fmt.Printf("%q\n", output)
 }

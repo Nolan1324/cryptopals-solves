@@ -34,7 +34,7 @@ func (a Application) CreateCiphertext() ([]byte, []byte) {
 	if err != nil {
 		panic(err)
 	}
-	pt = cipherx.AddPcks7Padding([]byte(pt), 16)
+	pt = cipherx.AddPkcs7Padding([]byte(pt), 16)
 	ct, err := cipherx.EncryptAesCbc(pt, a.key, iv)
 	if err != nil {
 		panic(err)
@@ -47,7 +47,7 @@ func (a Application) HasValidPadding(ciphertext []byte, iv []byte) bool {
 	if err != nil {
 		return false
 	}
-	_, err = cipherx.RemovePcks7Padding(pt)
+	_, err = cipherx.RemovePkcs7Padding(pt)
 	// if err == nil {
 	// 	log.Printf("pt=%q", pt)
 	// }

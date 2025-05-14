@@ -20,15 +20,15 @@ func craftAdminProfile(app Application) []byte {
 
 	// Goal is to produce the following string in the first blocks
 	// email=mmail@foo.
-	// admin[PCKS7 PAD]
-	// bs - len("admin") = 11 for PCKS7 padding
+	// admin[PKCS7 PAD]
+	// bs - len("admin") = 11 for PKCS7 padding
 	ct, err = app.EncryptedProfileFor(
 		"mmail@foo." + string(append([]byte("admin"), slicex.Repeat(byte(11), 11)...)),
 	)
 	if err != nil {
 		panic(err)
 	}
-	// email=mmail@foo.bar&uid=10&role=admin[PCKS7 PAD]
+	// email=mmail@foo.bar&uid=10&role=admin[PKCS7 PAD]
 	craftedProfile = append(craftedProfile, ct[bs:2*bs]...)
 
 	return craftedProfile
