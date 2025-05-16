@@ -10,7 +10,7 @@ import (
 const bs = 16
 
 func crackCbcBlock(prevBlock []byte, block []byte, app Application) []byte {
-	iv := slices.Clone(prevBlock)
+	iv := make([]byte, bs)
 	decrypted := make([]byte, bs)
 	for i := bs - 1; i >= 0; i-- {
 		numPadding := bs - i
@@ -27,7 +27,7 @@ func crackCbcBlock(prevBlock []byte, block []byte, app Application) []byte {
 				// have \x01 in the last byte, so keep searching.
 				if i == bs-1 {
 					ivTemp := slices.Clone(iv)
-					ivTemp[i-1] ^= 1
+					ivTemp[i-1] = 1
 					if !app.HasValidPadding(block, ivTemp) {
 						continue
 					}

@@ -37,3 +37,11 @@ This challenge is fairly straightforward, though we have to be careful of a few 
 ### Returning errors
 
 The convention in Go for a function returning an recoverable error (rather than an unrecoverable error, for we typically just `panic`) is to return an object of type `error`, which equals `nil` iff no error occured. If the function also needs to return a value of type `valType` when there is no error, the convention is to return a tuple of type `(valType, error)`. The caller then calls `val, err := func()` and is responsible for checking `err != nil` before trying to use `val`. My remove PKCS7 padding function has signature `RemovePkcs7Padding([]byte) ([]byte, error)`. If the padding is valid, it returns a slice of the input that excludes the padding, along with a `nil` error. Otherwise, it returns a non-`nil` error.
+
+### Formal Definition
+
+The edge cases when implementing made me realize in retrospect that it would be helpful to outline a formal definition for valid PKCS7 padding before implementing it. This would also be useful for later proofs (namely for the CBC padding oracle attack), so I include a definition here.
+
+**Definition: valid PKCS7 padding**
+
+A byte sequence $m$ has valid PKCS7 padding of length $p \in \mathbb{N}$ iff $1 \leq p \leq |m|$ and $m_i = p$ for all $|m|-p \leq i < |m|$.

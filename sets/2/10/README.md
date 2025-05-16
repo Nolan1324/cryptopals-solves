@@ -20,6 +20,6 @@ This challenge is fairly straightfoward to implement. I introduce a bit of notat
 
 Let $m$ be the current plaintext block, $c$ be the current ciphertext block, and $v$ be the previous ciphertext block (or the IV). Then the encrypt/decrypt functions for this block are:
 
-$E_\mathrm{CBC}(m, k) = E_\mathrm{AES}(m \oplus v, k)$
+$E_\mathrm{CBC\_block}(m, v, k) := E_\mathrm{AES}(m \oplus v, k)$
 
-$D_\mathrm{CBC}(c, k) = D_\mathrm{AES}(c, k) \oplus v$
+$D_\mathrm{CBC\_block}(c, v, k) := D_\mathrm{AES}(c, k) \oplus v$
