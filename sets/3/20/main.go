@@ -13,7 +13,7 @@ func getCiphertexts() [][]byte {
 	if err != nil {
 		panic(err)
 	}
-	cipher, err := cipherx.NewAesCtr(randx.RandBytes(16))
+	cipher, err := cipherx.MakeAesCtr(randx.RandBytes(16))
 	if err != nil {
 		panic(err)
 	}

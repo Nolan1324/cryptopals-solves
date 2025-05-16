@@ -11,7 +11,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	cipher, err := cipherx.NewAesCtr([]byte("YELLOW SUBMARINE"))
+	cipher, err := cipherx.MakeAesCtr([]byte("YELLOW SUBMARINE"))
 	if err != nil {
 		panic(err)
 	}

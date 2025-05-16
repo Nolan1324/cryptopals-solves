@@ -8,9 +8,12 @@ import (
 	"time"
 )
 
+const minSleep = 1
+const maxSleep = 6
+
 func generateRandomValue() uint32 {
 	sleep := func() {
-		time.Sleep(time.Duration(randx.RandRange(10, 60)) * time.Second)
+		time.Sleep(time.Duration(randx.RandRange(minSleep, maxSleep)) * time.Second)
 	}
 	sleep()
 	rng := cipherx.NewMersenneTwister(uint32(time.Now().Unix()))
