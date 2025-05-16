@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 )
 
-type count = uint64
+type Count = uint64
 
 const sizeOfCount = 8
 
@@ -24,7 +24,7 @@ func MakeAesCtr(key []byte) (AesCtr, error) {
 	return AesCtr{cipher: cipher}, nil
 }
 
-func (a AesCtr) Encrypt(pt []byte, nonce count) []byte {
+func (a AesCtr) Encrypt(pt []byte, nonce Count) []byte {
 	ct := make([]byte, len(pt))
 	keyBlock := make([]byte, bs)
 	count := nonce
@@ -44,18 +44,18 @@ func (a AesCtr) Encrypt(pt []byte, nonce count) []byte {
 	return ct
 }
 
-func (a AesCtr) Decrypt(ct []byte, nonce count) []byte {
+func (a AesCtr) Decrypt(ct []byte, nonce Count) []byte {
 	// CTR simply XORs the keystream with the text, so decrypt is the same as encrypt
 	return a.Encrypt(ct, nonce)
 }
 
-func (a AesCtr) GetKeystreamBlock(dst []byte, count count) {
+func (a AesCtr) GetKeystreamBlock(dst []byte, count Count) {
 	block := make([]byte, bs)
 	binary.LittleEndian.PutUint64(block[bs-sizeOfCount:], count)
 	a.cipher.Encrypt(dst, block)
 }
 
-func (a AesCtr) GetKeystreamByte(nonce count, offset count) byte {
+func (a AesCtr) GetKeystreamByte(nonce Count, offset Count) byte {
 	block := make([]byte, bs)
 	a.GetKeystreamBlock(block, nonce+offset/bs)
 	return block[offset%bs]
