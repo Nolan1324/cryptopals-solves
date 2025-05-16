@@ -1,4 +1,4 @@
-# Challenge 15
+# Challenge 17
 
 **The CBC padding oracle**
 
@@ -33,9 +33,9 @@ Let's first just look at how we can determine the final byte of $m$ using the or
 
 Recall that if we replace $v$ with $v'$, then $c$ now decrypts to $m' := D_\mathrm{CBC\_block}(c, v', k) = D_\mathrm{AES}(c, k) \oplus v' = m \oplus v \oplus v'$. So $O(c, v')$ returns true iff $m' = m \oplus v \oplus v'$ has valid PKCS7 padding. Thus, by varying the value of $v'_{s-1}$ and checking $O(c, v')$, we can learn information about $m'_{s-1}$, and by extension $m_{s-1}$.
 
-For each possible byte $0 \leq b < 256$, let $v' = (0)_{\times s-1} \mid\mid b$ and run $O(c,v')$. Iff $O$ returns true, then we know that $m_{s-1}' = m_{s-1} \oplus v_{s-1} \oplus b$ is a valid padding byte! So $1 \leq m_{s-1}' \leq s$.
+For each possible byte $0 \leq b < 256$, let $v' = (0)^{\times s-1} \mid\mid b$ and run $O(c,v')$. Here, $(0)^{\times s-1}$ denotes the 0 value byte repeated $s-1$ times, but it does not really matter what we set those bytes to. Iff $O(c,v')$ returns true, then we know that $m_{s-1}' = m_{s-1} \oplus v_{s-1} \oplus b$ is a valid padding byte! So $1 \leq m_{s-1}' \leq s$.
 
-However, we would like to pinpoint an exact value for $m_{s-1}'$; for instance, $m_{s-1}'=1$. To do this, whenever we find a $b$ such that $O(c, v')$ returns true, we can let $v'' = (0)_{\times s-2} \mid\mid 1 \mid\mid b$ and run $O(c,v'')$. Compared to $v'$, all we did was change the last $0$ to a $1$, so we have that $m''_{s-2} \neq m'_{s-2}$ but still $m''_{s-1} = m'_{s-1}$. If this $O(c,v'')$ _also_ returns true, then we know that $m'_{s-1}$ is a valid padding byte even if we change the value of the byte proceeding it. Therefore, it must be that $m'_{s-1} = 1$, because if it was any value $>1$, $m'_{s-2}$ or $m''_{s-2}$ would have differed from $m'_{s-1}$ and caused invalid padding.
+However, we would like to pinpoint an exact value for $m_{s-1}'$; for instance, $m_{s-1}'=1$. To do this, whenever we find a $b$ such that $O(c, v')$ returns true, we can let $v'' = (0)^{\times s-2} \mid\mid 1 \mid\mid b$ and run $O(c,v'')$. Compared to $v'$, all we did was change the last $0$ to a $1$, so we have that $m''_{s-2} \neq m'_{s-2}$ but still $m''_{s-1} = m'_{s-1}$. If this $O(c,v'')$ _also_ returns true, then we know that $m'_{s-1}$ is a valid padding byte even if we change the value of the byte proceeding it. Therefore, it must be that $m'_{s-1} = 1$, because if it was any value $>1$, $m'_{s-2}$ or $m''_{s-2}$ would have differed from $m'_{s-1}$ and caused invalid padding.
 
 Then we finally learn that $m_{s-1} = m_{s-1}' \oplus v_{s-1} \oplus b = 1 \oplus v_{s-1} \oplus b$.
 
@@ -45,7 +45,7 @@ We will start with $i = s-2$ and iterate to $i = 0$. By induction, assume that w
 
 **Idea:** Since $m_i$ is the $(s-i)$-th byte from the right of $m$, we will craft $v'$ so that bytes $m_{i+1:s}'$ equal $s-i$ and then search for a $v'_{i}$ that makes $m'_{i} = s-1$, causing $m'$ to have valid padding (since the last $s-i$ bytes would equal $s-i$, in this case).
 
-For each $0 \leq b < 256$, let $v' = (0)_{\times i} \mid\mid b \mid\mid (v_{i+1:s} \oplus m_{i+1:s} \oplus (s-i)_{\times s-i-1})$ and run $O(c, v')$. For each $i+1 \leq j < s$, we have that $m'_j = m_j \oplus v_j \oplus v'_j = m_j \oplus v_j \oplus (v_j \oplus m_j \oplus (s-i)) = s-i$. Thus, $O(c, v')$ returns true iff $m'$ has valid padding iff $m_i' = s-i$. So when $O(c, v')$ does return true (which will happen _exactly once_), we learn that $m_i = m_i' \oplus v_i \oplus b = (s-i) \oplus v_i \oplus b$.
+For each $0 \leq b < 256$, let $v' = (0)^{\times i} \mid\mid b \mid\mid (v_{i+1:s} \oplus m_{i+1:s} \oplus (s-i)^{\times s-i-1})$ and run $O(c, v')$. For each $i+1 \leq j < s$, we have that $m'_j = m_j \oplus v_j \oplus v'_j = m_j \oplus v_j \oplus (v_j \oplus m_j \oplus (s-i)) = s-i$. Thus, $O(c, v')$ returns true iff $m'$ has valid padding iff $m_i' = s-i$. So when $O(c, v')$ does return true (which will happen _exactly once_), we learn that $m_i = m_i' \oplus v_i \oplus b = (s-i) \oplus v_i \oplus b$.
 
 By repeating the above process, we learn all the bytes of $m$.
 

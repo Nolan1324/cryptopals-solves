@@ -28,7 +28,7 @@ The challenge first asks us to "encrypt a known plaintext (say, 14 consecutive '
 
 So the "application" exposes a function $E(m) := (p \mid\mid m) \oplus K$, where $p$ is the random padding and $K$ is the keystream generated from the seed $k$.
 
-Let $m = ('A')_{\times 14}$ as suggested and call $c := E(m)$. We can discover the padding length $|p|$ via $|p| = |c| - |m|$. This tells us that $c_{|p|:|p|+|m|} = m \oplus K_{|p|:|p|+|m|}$, and thus we can compute $K_{|p|:|p|+|m|} = m \oplus c_{|p|:|p|+|m|}$ since we know $c$ and $m$.
+Let $m = ('A')^{\times 14}$ as suggested and call $c := E(m)$. We can discover the padding length $|p|$ via $|p| = |c| - |m|$. This tells us that $c_{|p|:|p|+|m|} = m \oplus K_{|p|:|p|+|m|}$, and thus we can compute $K_{|p|:|p|+|m|} = m \oplus c_{|p|:|p|+|m|}$ since we know $c$ and $m$.
 
 We know just need to figure out which seed generates the keystream bytes $K_{|p|:|p|+|m|}$. Since the seed is only 16-bits, there are only $2^{16} = 65536$ so we can feasibly just try each seed. For each seed, construct a MT19937, skip the first $|p|$ outputs, then read the next $|m|$ outputs (each trunucated to 8-bits) and check if they equal $K_{|p|:|p|+|m|}$. If they are equal, we have found the seed (with high probability).
 
