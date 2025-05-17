@@ -39,9 +39,9 @@ The challenge description already tells us exactly how to carry out the attack, 
 
 Let $P_1, P_2, P_3$ be the blocks of the plaintext message (I am using the same notation as the challenge here). The sender encrypts and sends
 
-$$
+```math
 C_1 \mid\mid C_2 \mid\mid C_3 = E_\text{CBC}(P_1 \mid\mid P_2 \mid\mid P_3, k, k)
-$$
+```
 
 If we break this down by block, we see that
 
@@ -81,7 +81,7 @@ P'_3 &= D_\text{AES}(C'_3, k) \oplus C'_2 = D_\text{AES}(C_1, k) \oplus 0 = D_\t
 
 Since $P_2'$ gets scrambled, each byte has probability $1/2$ of being a high ASCII (value above 127) byte. So $P_2'$ has probability $1 - (1/2)^{16} \approx 0.99976$ to have at least one high ASCII byte and thus raise an error.
 
-We can also see that $P'_1 \oplus P'_3 = (D_\text{AES}(C_1, k) \oplus k) \oplus (D_\text{AES}(C_1, k)) = k$, allowing the attacker to compute the key from the plaintext $P'_1 \mid\mid P'_2 \mid\mid P'_3$ in the error message.
+We can also see that $`P'_1 \oplus P'_3 = (D_\text{AES}(C_1, k) \oplus k) \oplus (D_\text{AES}(C_1, k)) = k`$, allowing the attacker to compute the key from the plaintext $`P'_1 \mid\mid P'_2 \mid\mid P'_3`$ in the error message.
 
 ## Simulating man-in-the-middle
 
