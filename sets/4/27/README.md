@@ -40,48 +40,48 @@ The challenge description already tells us exactly how to carry out the attack, 
 Let $P_1, P_2, P_3$ be the blocks of the plaintext message (I am using the same notation as the challenge here). The sender encrypts and sends
 
 $$
-C_1 || C_2 || C_3 = E_\text{CBC}(P_1 || P_2 || P_3, k, k)
+C_1 \mid\mid C_2 \mid\mid C_3 = E_\text{CBC}(P_1 \mid\mid P_2 \mid\mid P_3, k, k)
 $$
 
 If we break this down by block, we see that
 
-$$
+```math
 \begin{align*}
 C_1 &= E_\text{AES}(P_1, k) \oplus k \\
 C_2 &= E_\text{AES}(P_1, k) \oplus C_1 \\
 C_3 &= E_\text{AES}(P_1, k) \oplus C_2
 \end{align*}
-$$
+```
 
 As the attacker, we then modify the ciphertext blocks as follows
 
-$$
+```math
 \begin{align*}
 C'_1 &= C_1 \\
 C'_2 &= 0 \\
 C'_3 &= C_1
 \end{align*}
-$$
+```
 
 When the receiver decrypts
 
-$$
-P'_1 || P'_2 || P'_3 = D_\text{CBC}(C'_1 || C'_2 || C'_3, k, k) = D_\text{CBC}(C_1 || 0 || C_1, k, k)
-$$
+```math
+P'_1 \mid\mid P'_2 \mid\mid P'_3 = D_\text{CBC}(C'_1 || C'_2 || C'_3, k, k) = D_\text{CBC}(C_1 \mid\mid 0 \mid\mid C_1, k, k)
+```
 
 each new plaintext block will look like
 
-$$
+```math
 \begin{align*}
-P'_1 &= D_\text{AES}(C_1, k) \oplus k \\
-P'_2 &= D_\text{AES}(0, k) \oplus C_1 = \text{scrambled garbage} \\
-P'_3 &= D_\text{AES}(C_1, k) \oplus 0 = D_\text{AES}(C_1, k)
+P'_1 &= D_\text{AES}(C'_1, k) \oplus k = D_\text{AES}(C_1, k) \oplus k \\
+P'_2 &= D_\text{AES}(C'_2, k) \oplus C'_1 = D_\text{AES}(0, k) \oplus C_1 = \text{scrambled garbage} \\
+P'_3 &= D_\text{AES}(C'_3, k) \oplus C'_2 = D_\text{AES}(C_1, k) \oplus 0 = D_\text{AES}(C_1, k)
 \end{align*}
-$$
+```
 
 Since $P_2'$ gets scrambled, each byte has probability $1/2$ of being a high ASCII (value above 127) byte. So $P_2'$ has probability $1 - (1/2)^{16} \approx 0.99976$ to have at least one high ASCII byte and thus raise an error.
 
-We can also see that $P'_1 \oplus P'_3 = (D_\text{AES}(C_1, k) \oplus k) \oplus (D_\text{AES}(C_1, k)) = k$, allowing the attacker to compute the key from the plaintext $P'_1 || P'_2 || P'_3$ in the error message.
+We can also see that $P'_1 \oplus P'_3 = (D_\text{AES}(C_1, k) \oplus k) \oplus (D_\text{AES}(C_1, k)) = k$, allowing the attacker to compute the key from the plaintext $P'_1 \mid\mid P'_2 \mid\mid P'_3$ in the error message.
 
 ## Simulating man-in-the-middle
 
