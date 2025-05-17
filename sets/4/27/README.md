@@ -1,5 +1,7 @@
 # Challenge 27
 
+**Recover the key from CBC with IV=Key**
+
 ## Challenge description
 
 > Take your code from the CBC exercise and modify it so that it repurposes the key for CBC encryption as the IV.
