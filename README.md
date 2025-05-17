@@ -38,3 +38,9 @@ Set 3
 22. [Crack an MT19937 seed](sets/3/22)
 23. [Clone an MT19937 RNG from its output](sets/3/23)
 24. [Create the MT19937 stream cipher and break it](sets/3/24)
+
+Set 4
+
+25. [Break "random access read/write" AES CTR](sets/4/25)
+26. [CTR bitflipping](sets/4/26)
+27. [Recover the key from CBC with IV=Key](sets/4/27)
