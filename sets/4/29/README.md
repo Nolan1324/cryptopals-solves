@@ -128,7 +128,7 @@ Let $e$ be the new data we want to extend the message with. We can update the cu
 \begin{align*}
 c' &= S(c, e \mid\mid p) \\
 &= S(S(\mathfrak{v}, k \mid\mid m \mid\mid g), \; e \mid\mid p) \\
-&= S(\mathfrak{v}, k \mid\mid m \mid\mid g \mid\mid e \mid\mid p) \tag*{Lemma 1}
+&= S(\mathfrak{v}, k \mid\mid m \mid\mid g \mid\mid e \mid\mid p) & \text{Lemma 1}
 \end{align*}
 ```
 
