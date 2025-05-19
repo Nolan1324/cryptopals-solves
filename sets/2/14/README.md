@@ -28,7 +28,7 @@ In challenge 12, we already constructed algorithms to determine block size and E
 
 ### Cracking the target text
 
-If we can reduce the oracle $O(m) = E_\text{ECB}(p \mid\mid m \mid\mid t, k)$ to another oracle of the form $O'(m) = E_\text{ECB}(m \mid\mid t, k)$, then we can just invoke are algorithm from challenge 12 on $O'$.
+If we can reduce the oracle $O(m) = E_\text{ECB}(p \mid\mid m \mid\mid t, k)$ to another oracle of the form $O'(m) = E_\text{ECB}(m \mid\mid t, k)$, then we can just invoke our algorithm from challenge 12 on $O'$.
 
 #### The reduction
 
