@@ -44,3 +44,6 @@ Set 4
 25. [Break "random access read/write" AES CTR](sets/4/25)
 26. [CTR bitflipping](sets/4/26)
 27. [Recover the key from CBC with IV=Key](sets/4/27)
+28. [Break a SHA-1 keyed MAC using length extension](sets/4/28)
+29. [Break an MD4 keyed MAC using length extension](sets/4/29)
+30. [Implement and break HMAC-SHA1 with an artificial timing leak](sets/4/30)
