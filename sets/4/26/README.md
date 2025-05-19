@@ -34,7 +34,7 @@ comment1=cooking%20MCs;userdata=aaaaaaaaaaaa;comment2=%20like%20a%20pound%20of%2
 
 along with the nonce $u$.
 
-We can slice out the ciphertext $c$ for the plaintext we inputted (bytes $[32, 32+12)$). We can then find the keystream bytes $[32, 32+12)$ (when using nonce $u$) by simply computing $K = m \oplus c$. Then if we want to generate new ciphertext bytes $c'$ that decrypt to a new message $m'$, we just construct $c' := m' \oplus K$ which gives that $D_{CTR}(c') = c' \oplus K = (m' \oplus K) \oplus K = m'$ as desired. If we let $m'$ equal `a;admin=true"` and then construct $c'$ accordingly, the ciphertext now decrypts to
+We can slice out the ciphertext $c$ for the plaintext we inputted (bytes $`[32, 32+12)`$). We can then find the keystream bytes $`[32, 32+12)`$ (when using nonce $u$) by simply computing $K = m \oplus c$. Then if we want to generate new ciphertext bytes $c'$ that decrypt to a new message $m'$, we just construct $c' := m' \oplus K$ which gives that $`D_\text{CTR}(c') = c' \oplus K = (m' \oplus K) \oplus K = m'`$ as desired. If we let $m'$ equal `a;admin=true"` and then construct $c'$ accordingly, the ciphertext now decrypts to
 
 ```
 comment1=cooking%20MCs;userdata=a;admin=true;comment2=%20like%20a%20pound%20of%20bacon
