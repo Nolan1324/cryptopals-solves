@@ -79,7 +79,7 @@ func DecryptAesCbc(buf []byte, key []byte, iv []byte) ([]byte, error) {
 // AddPkcs7Padding returns the updated slice. It is therefore necessary to store the
 // result of AddPkcs7Padding, often in the variable holding the slice itself:
 //
-//	slice = append(slice, 16)
+//	buf = AddPkcs7Padding(buf, 16)
 func AddPkcs7Padding(buf []byte, bs int) []byte {
 	paddingSize := bs - (len(buf) % bs)
 	for range paddingSize {
