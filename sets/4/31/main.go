@@ -2,15 +2,21 @@ package main
 
 import (
 	"cryptopals/internal/apps/timeattack"
+	"cryptopals/internal/randx"
 	"encoding/hex"
-	"fmt"
+	"log"
+	"net/http"
 	"time"
 )
 
-const endpoint = "http://localhost:9000/test"
+const (
+	address  = "localhost:8000"
+	endpoint = "http://" + address + "/" + timeattack.TestEndpoint
+	hmacLen  = 20
+)
 
 func attack(file string) ([]byte, error) {
-	guess := make([]byte, 20)
+	guess := make([]byte, hmacLen)
 
 	for i := range guess {
 		var bestDuration time.Duration
@@ -29,24 +35,43 @@ func attack(file string) ([]byte, error) {
 			}
 		}
 		guess[i] = bestByte
-		fmt.Printf("Current guess: %x\n", guess[:i+1])
+		log.Printf("Current guess: %x\n", guess[:i+1])
 	}
 
 	return nil, nil
 }
 
 func main() {
-	// cancel := timeattack.RunServerProcessInBackground("./server")
-	// defer cancel()
-	// time.Sleep(3 * time.Second)
+	server := timeattack.NewServer(address, randx.RandBytes(16), time.Millisecond*5, false)
+	go func() {
+		err := server.ListenAndServe()
+		if err != nil && err != http.ErrServerClosed {
+			panic(err)
+		}
+	}()
+	defer func() {
+		err := server.Close()
+		if err != nil {
+			log.Printf("when closing server: %v\n", err)
+		}
+	}()
 
-	guess, err := attack("foo")
+	file := "foo"
+	answer := server.Sign([]byte(file))
+	log.Printf("True answer: %x", answer)
+
+	err := timeattack.WaitForServerStartWithTimeout(3*time.Second, 5*time.Millisecond, endpoint)
 	if err != nil {
-		fmt.Printf("error attacking: %v\n", err)
+		log.Fatalf("timeout out waiting for server: %v", err)
+	}
+
+	guess, err := attack(file)
+	if err != nil {
+		log.Fatalf("when attacking: %v\n", err)
 	}
 	if guess != nil {
-		fmt.Printf("Signature found: %x\n", guess)
+		log.Printf("Signature for '%v' found: %x\n", file, guess)
 	} else {
-		fmt.Printf("No signature found\n")
+		log.Printf("No signature for '%v' found\n", file)
 	}
 }
