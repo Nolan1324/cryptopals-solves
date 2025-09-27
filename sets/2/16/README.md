@@ -100,7 +100,7 @@ of%20bacon[PKCS]
 
 This gives `admin=true` in the string, as desired. It also causes `userdata` to equal the scrambled block, but thats fine as long as the scrambled data is valid.
 
-Now, to actually perform CBC bit-flipping, let $m_3'$ equal `;admin=true;a=aa`. Then let $c_2' = c_2 \oplus m_3 \oplus m_3'$. Then we make the tampered ciphertext $c' = c_{0:2} || c_2' || c_3 || c_{4:}$, which decrypts to $m' = m_{0:2} || \text{scrambled} || m_3' || m_{4:}$ as desired.
+Now, to actually perform CBC bit-flipping, let $m_3'$ equal `;admin=true;a=aa`. Then let $c_2' = c_2 \oplus m_3 \oplus m_3'$. Then we make the tampered ciphertext $c' = c_{0:2} \mid\mid c_2' \mid\mid c_3 \mid\mid c_{4:}$, which decrypts to $m' = m_{0:2} \mid\mid \text{scrambled} \mid\mid m_3' \mid\mid m_{4:}$ as desired.
 
 #### Errors caused by the scrambled block
 

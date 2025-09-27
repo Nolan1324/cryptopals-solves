@@ -66,7 +66,7 @@ C'_3 &= C_1
 When the receiver decrypts
 
 ```math
-P'_1 \mid\mid P'_2 \mid\mid P'_3 = D_\text{CBC}(C'_1 || C'_2 || C'_3, k, k) = D_\text{CBC}(C_1 \mid\mid 0 \mid\mid C_1, k, k)
+P'_1 \mid\mid P'_2 \mid\mid P'_3 = D_\text{CBC}(C'_1 \mid\mid C'_2 \mid\mid C'_3, k, k) = D_\text{CBC}(C_1 \mid\mid 0 \mid\mid C_1, k, k)
 ```
 
 each new plaintext block will look like

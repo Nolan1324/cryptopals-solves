@@ -38,7 +38,7 @@ The Go standard library has a SHA-1 implementation, but we will need to be able 
 As the challenge description explains, SHA-1 MAC can be implemented as simply
 
 ```
-SHA1(key || message)
+SHA1(key \mid\mid message)
 ```
 
 (which is **_incredibly_** insecure, as we will see in the next challenge)

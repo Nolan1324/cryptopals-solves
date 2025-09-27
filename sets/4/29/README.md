@@ -197,7 +197,7 @@ We perform the previously described length extension attack to extend the origin
 comment1=cooking%20MCs;userdata=foo;comment2=%20like%20a%20pound%20of%20bacon[glue padding];admin=true
 ```
 
-> **An aside:** Notice that the glue padding is part of the message. In this case, it becomes part of the value for `comment2`. This could potentially make the message invalid to the application. For instance, if the length of `key || originalMessage` happened to be 61, the padding would contain a `'='` character at the end, causing us to have a `=` without a matching `;`. In this challenge, we get lucky that the glue padding does not make the message invalid.
+> **An aside:** Notice that the glue padding is part of the message. In this case, it becomes part of the value for `comment2`. This could potentially make the message invalid to the application. For instance, if the length of `key \mid\mid originalMessage` happened to be 61, the padding would contain a `'='` character at the end, causing us to have a `=` without a matching `;`. In this challenge, we get lucky that the glue padding does not make the message invalid.
 
 We then pass both the new message (including the glue padding in the middle) and the forged MAC to the application to gain administrator access.
 
