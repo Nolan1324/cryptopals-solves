@@ -27,20 +27,20 @@ The tempering function involves the following sequences of operations.
 
 $$
 \begin{align*}y&= x\oplus (x\gg u)\\
-y &= y \oplus ((y\ll s)~\And ~b)\\
-y &= y \oplus ((y\ll t)~\And ~c)\\z
+y &= y \oplus ((y\ll s) ~ \And ~ b)\\
+y &= y \oplus ((y\ll t) ~ \And ~ c)\\
 &= y\oplus (y\gg l)
 \end{align*}
 $$
 
-To invert these operations, there are two different types of operations we need to invert: $y = x \oplus ((x \ll s) \And m)$ and $y = x \oplus (x \gg s)$.
+To invert these operations, there are two different types of operations we need to invert: $y = x \oplus ((x \ll s) ~ \And ~ m)$ and $y = x \oplus (x \gg s)$.
 
-#### Inverting $y = x \oplus ((x \ll s) \And m)$
+#### Inverting $y = x \oplus ((x \ll s) ~ \And ~ m)$
 
 We want to invert the function
 
 $$
-y = x \oplus ((x \ll s) \And m)
+y = x \oplus ((x \ll s) ~ \And ~ m)
 $$
 
 where $x$ is a 32-bit input, $y$ is the output, $1 \leq s \leq 32$ is the shift amount, and $m$ is a 32-bit mask.
@@ -50,7 +50,7 @@ It is a bit easier to analyze the function if we define it bitwise. Let $0 \leq 
 $$
 y_i = 
 \begin{cases}
-x_i \oplus (x_{i-s} \And m_i) & i \geq s \\
+x_i \oplus (x_{i-s} ~ \And ~ m_i) & i \geq s \\
 x_i & \text{otherwise}
 \end{cases}
 $$
@@ -60,14 +60,14 @@ We can then write the inverse as a recursive function
 $$
 x_i = 
 \begin{cases}
-y_i \oplus (x_{i-s} \And m_i) & i \geq s \\
+y_i \oplus (x_{i-s} ~ \And ~ m_i) & i \geq s \\
 y_i & \text{otherwise}
 \end{cases}
 $$
 
 This is a recursive function because we can compute $x_i$ from $x_{i-s}$, which we compute from $x_{i-2s}$, etc until we reach some base case $x_j$ where $j < s$.
 
-We can also use this recursive function to compute $x$ from $y$ in an iterative fashion. Initialize $x_i = y_i$ for all $0 \leq i < s$. Then for $i = s$ to $31$, compute $x_i = y_i \oplus (x_{i-s} \And m_i)$. (Technically, this is dynamic programming!). Now we have a method to compute $x$ from $y$!
+We can also use this recursive function to compute $x$ from $y$ in an iterative fashion. Initialize $x_i = y_i$ for all $0 \leq i < s$. Then for $i = s$ to $31$, compute $x_i = y_i \oplus (x_{i-s} ~ \And ~ m_i)$. (Technically, this is dynamic programming!). Now we have a method to compute $x$ from $y$!
 
 #### Inverting $y = x \oplus (x \gg s)$
 
