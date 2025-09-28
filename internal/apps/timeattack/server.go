@@ -63,9 +63,7 @@ func (s *TimeAttackServer) handler(w http.ResponseWriter, r *http.Request) {
 	file := q.Get("file")
 	signature := q.Get("signature")
 
-	mac := hmac.New(sha1.New, s.key)
-	mac.Write([]byte(file))
-	expectedSignatureBytes := mac.Sum(nil)
+	expectedSignatureBytes := s.Sign([]byte(file))
 
 	signatureBytes, err := hex.DecodeString(signature)
 	if err != nil {
