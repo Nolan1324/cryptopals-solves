@@ -4,6 +4,7 @@ import (
 	"cryptopals/internal/hashx"
 	"cryptopals/internal/hashx/md4x"
 	"cryptopals/internal/hashx/sha1x"
+	"slices"
 )
 
 func ExtendSha1Mac(mac []byte, keySize int, originalMessage []byte, newMessage []byte) ([]byte, []byte) {
@@ -26,10 +27,7 @@ func ExtendMac(hu hashx.HashUtils, mac []byte, keySize int, originalMessage []by
 	h.Write(newMessage)
 	extendedMac := h.Sum(nil) // nil here just means we append the digest to an empty slice
 
-	fullMessage := make([]byte, 0)
-	fullMessage = append(fullMessage, originalMessage...)
-	fullMessage = append(fullMessage, gluePadding...)
-	fullMessage = append(fullMessage, newMessage...)
+	fullMessage := slices.Concat(originalMessage, gluePadding, newMessage)
 
 	return fullMessage, extendedMac
 }
