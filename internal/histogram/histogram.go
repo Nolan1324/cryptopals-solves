@@ -17,17 +17,15 @@ var histogramsFolder embed.FS
 var expectedHistogram Histogram
 var expectedHistogramFirstChars Histogram
 
-func NewHistogram() Histogram {
-	return mat.NewVecDense(128, nil)
-}
-
-func initHistograms() {
-	if expectedHistogram != nil {
-		return
-	}
-
+// init is the package-level init function that loads the
+// pre-computed histograms into memory.
+func init() {
 	expectedHistogram = loadHistogramFile("histogram.txt")
 	expectedHistogramFirstChars = loadHistogramFile("histogram_first_chars.txt")
+}
+
+func NewHistogram() Histogram {
+	return mat.NewVecDense(128, nil)
 }
 
 func loadHistogramFile(histogramFilename string) Histogram {
@@ -107,13 +105,9 @@ func score(observedHistogram Histogram, expectedHistogram Histogram) float64 {
 }
 
 func Score(observedHistogram Histogram) float64 {
-	initHistograms()
-
 	return score(observedHistogram, expectedHistogram)
 }
 
 func ScoreCaseFirstCharacter(observedHistogram Histogram) float64 {
-	initHistograms()
-
 	return score(observedHistogram, expectedHistogramFirstChars)
 }

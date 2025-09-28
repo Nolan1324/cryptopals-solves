@@ -6,7 +6,6 @@ import (
 )
 
 func TestHistogram(t *testing.T) {
-	initHistograms()
 	if expectedHistogram.Len() != 128 {
 		t.Fatalf("expected histgram vector length 128, actual %v", expectedHistogram.Len())
 	}
