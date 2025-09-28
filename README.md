@@ -47,3 +47,5 @@ Set 4
 28. [Implement a SHA-1 keyed MAC](sets/4/28)
 29. [Break a SHA-1 keyed MAC using length extension](sets/4/29)
 30. [Break an MD4 keyed MAC using length extension](sets/4/30)
+31. [Implement and break HMAC-SHA1 with an artificial timing leak](sets/4/31)
+32. [Break HMAC-SHA1 with a slightly less artificial timing leak](sets/4/32)
