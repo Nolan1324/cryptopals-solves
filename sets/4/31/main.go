@@ -10,9 +10,10 @@ import (
 )
 
 const (
-	address  = "localhost:8000"
-	endpoint = "http://" + address + "/" + timeattack.TestEndpoint
-	hmacLen  = 20
+	address         = "localhost:8000"
+	endpoint        = "http://" + address + "/" + timeattack.TestEndpoint
+	hmacLen         = 20
+	compareDuration = time.Millisecond * 50
 )
 
 func attack(file string) ([]byte, error) {
@@ -42,7 +43,8 @@ func attack(file string) ([]byte, error) {
 }
 
 func main() {
-	server := timeattack.NewServer(address, randx.RandBytes(16), time.Millisecond*5, false)
+	server := timeattack.NewServer(address, randx.RandBytes(16),
+		compareDuration, false)
 	go func() {
 		err := server.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
@@ -60,7 +62,7 @@ func main() {
 	answer := server.Sign([]byte(file))
 	log.Printf("True answer: %x", answer)
 
-	err := timeattack.WaitForServerStartWithTimeout(3*time.Second, 5*time.Millisecond, endpoint)
+	err := timeattack.WaitForServerStartWithTimeout(3*time.Second, 100*time.Millisecond, endpoint)
 	if err != nil {
 		log.Fatalf("timeout out waiting for server: %v", err)
 	}
