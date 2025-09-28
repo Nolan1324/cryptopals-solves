@@ -122,6 +122,8 @@ c = H(k \mid\mid m) = S(\mathfrak{v}, k \mid\mid m \mid\mid \mathrm{padding}(|k|
 
 As the attacker, we are provided $m$ and $c$. We are not directly provided the length of the key, $|k|$, but we can guess it through brute-force.
 
+Let $g := \mathrm{padding}(|k| + |m|)$ which we have enough information to compute. The challenge calls this the "glue padding."
+
 Let $e$ be the new data we want to extend the message with. We can update the current digest $c$ with this new data by calling $c' := S(c, e \mid\mid p)$, as long as we pad it with some $p$ to block-align it. We can see that
 
 ```math
@@ -149,7 +151,7 @@ We summarize this final result as follows:
 
 > Let $m$ be a message, $k$ be a MAC key, $c := \mathrm{MAC}(m, k)$, $e$ be the new data we want to extend the message with.
 > 
-> Let $g = \mathrm{padding}(|k| + |m|)$ and $`m' := m \mid\mid g \mid\mid e`$. Then
+> Let $g := \mathrm{padding}(|k| + |m|)$ and $`m' := m \mid\mid g \mid\mid e`$. Then
 > 
 > ```math
 > \text{MAC}(m', k) = S(c, e \mid\mid \text{padding}(|k| + |m'|))
@@ -157,7 +159,7 @@ We summarize this final result as follows:
 
 In other words, given a message $m$, its MAC, and the MAC key length, we fabricate a valid MAC for the message $m \mid\mid g \mid\mid e$.
 
-<!-- I like doing this formalization because it allows us to see concretely where all the pieces fall entire place, and it allows us to convince ourself that the  -->
+> An aside: I like doing this formalization because it allows us to see concretely how all the pieces fall into place. It also helps us to convince ourself that the properties of the attack are true, and it gives us a resource to look back to if we ever need to re-convince ourselves of these propreties.
 
 ### Attack implementation
 
