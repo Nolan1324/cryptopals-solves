@@ -4,7 +4,7 @@ This challenge is fairly straightforward, so I will use this space to talk about
 
 ## Programming language: Go
 
-I implemented both the challenges and my solutions in Go. I chose Go as it provides static typing (as opposed to Python) while still being fairly convenient and quick to implement with. Additionally, I also wanted to leverage its package system create some structure to the codebase.
+I implemented both the challenges and my solutions in Go. I chose Go as it provides static typing (as opposed to say, Python) while still being fairly convenient and quick to implement with. Additionally, I also wanted to leverage its package system to create some structure to the codebase.
 
 ## Codebase structure
 
