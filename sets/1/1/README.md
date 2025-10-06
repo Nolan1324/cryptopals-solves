@@ -1,4 +1,4 @@
-# Challenge 1
+u# Challenge 1
 
 This challenge is fairly straightforward, so I will use this space to talk about the codebase setup.
 
@@ -18,7 +18,7 @@ In Go, a module can be split into many **packages**. Each directory can contain 
 
 By default, packages in this module could be imported by other modules. However, in this project, I just want to use the packages I write internally without exporting them. Go lets you do this by placing the packages in an directory named `internal`.
 
-When importing a package into another package or module, only symbols starting with a captial letter will be accessible from that package. For example, suppose package `a` implements functions `Foo()`, `bar()`, and defines a struct `type Data struct { Bizz int; bazz int }`. Then package `b` can access `a.Foo()` but not `a.bar()`. `b` can also access the type `Data`, but can only access its member `Bizz`, not `bazz`.
+When importing a package into another package or module, only symbols starting with a capital letter will be accessible from that package. For example, suppose package `a` implements functions `Foo()`, `bar()`, and defines a struct `type Data struct { Bizz int; bazz int }`. Then package `b` can access `a.Foo()` but not `a.bar()`. `b` can also access the type `Data`, but can only access its member `Bizz`, not `bazz`.
 
 ### My module
 
