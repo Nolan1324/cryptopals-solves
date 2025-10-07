@@ -23,7 +23,7 @@
 
 ### HMAC
 
-In the previous challenge, we saw how the naive implementation of MAC is vulnerable to length-extension attacks. HMAC on the other hand is a much more well-thought-out protocol. The basic idea of HMAC is to feed the output of naive MAC ($H(k \mid\mid m)$) into another naive MAC, giving the form $H(k \mid\mid H(k \mid\mid m))$. Recall that length-extending a hash expression of the form $c := H(k \mid\mid m)$ requires knowing both $m$ and $c$. In HMAC, the outer hash function hides the value of the inner $H(k \mid\mid m)$ expression, preventing us from length-extending the inner hash. Moreover, not knowing $H(k \mid\mid m)$ also prevents us from length-extending the outer hash.
+In the previous challenge, we saw how the naive implementation of MAC is vulnerable to length-extension attacks. HMAC on the other hand is a much more well-thought-out protocol. The basic idea of HMAC is to feed the output of naive MAC $H(k \mid\mid m)$ into another naive MAC, giving the form $H(k \mid\mid H(k \mid\mid m))$. Recall that length-extending a hash expression of the form $c := H(k \mid\mid m)$ requires knowing both $m$ and $c$. In HMAC, the outer hash function hides the value of the inner $H(k \mid\mid m)$ expression, preventing us from length-extending the inner hash. Moreover, not knowing $H(k \mid\mid m)$ also prevents us from length-extending the outer hash.
 
 The HMAC full protocol also pads (XORs) the inner and outer keys with different magic numbers, giving
 
@@ -107,7 +107,7 @@ The key idea appears to be to remove the early return. This means that no matter
 I am not entirely certain what specific advantage the bitwise operations provide. My guess is that bitwise operations reveal less information than something like 
 
 ```go
-if x[i] == y[i] {
+if x[i] != y[i] {
     equal = false
 }
 ```
