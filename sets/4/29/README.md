@@ -58,7 +58,7 @@ type HashUtils interface {
 }
 ```
 
-Initially I just created these as standalone functions. However, the next challenge had me cary out the exact same attack for a different hash algorithm, which required these exact same utility functions. Creating an interface made it easy to swap between the different hash algorithms in the attack.
+Initially I just created these as standalone functions. However, the next challenge had me carry out the exact same attack for a different hash algorithm, which required these exact same utility functions. Creating an interface made it easy to swap between the different hash algorithms in the attack.
 
 `FromRegisters` just constructs a `digest` object with the registers set to the provided values. It also sets the `len` value on the `digest` object, since the current message length will need to be known when `Sum` is called and the hash algorithm computes the padding.
 
@@ -174,10 +174,7 @@ func ExtendMac(hu hashx.HashUtils, mac []byte, keySize int, originalMessage []by
 	h.Write(newMessage)
 	extendedMac := h.Sum(nil) // nil here just means we append the digest to an empty slice
 
-	fullMessage := make([]byte, 0)
-	fullMessage = append(fullMessage, originalMessage...)
-	fullMessage = append(fullMessage, gluePadding...)
-	fullMessage = append(fullMessage, newMessage...)
+	fullMessage := slices.Concat(originalMessage, gluePadding, newMessage)
 
 	return fullMessage, extendedMac
 }
