@@ -87,7 +87,7 @@ We can also see that $`P'_1 \oplus P'_3 = (D_\text{AES}(C_1, k) \oplus k) \oplus
 
 This challenge asks us to simulate a man-in-the-middle scenario. I thought this would be a fun opportunity to make use of Go channels to model the passing of messages between the different actors involved.
 
-There are three attacks, the sender, receiver, and attacker. The **sender** can send the ciphertext `[]byte` object to the channel `inputChan`. The **receiver** receives the ciphretext object from the channel `outputChan` and then decrypts it. If the receiver discovers invalid ASCII characters in the decrypted message, it sends a custom error of type `*AsciiError` containing the decrypted message to the channel `errChan`; otherwise, it sends `nil` to `errChan`.
+There are three agents: the sender, receiver, and attacker. The **sender** can send the ciphertext `[]byte` object to the channel `inputChan`. The **receiver** receives the ciphertext object from the channel `outputChan` and then decrypts it. If the receiver discovers invalid ASCII characters in the decrypted message, it sends a custom error of type `*AsciiError` containing the decrypted message to the channel `errChan`; otherwise, it sends `nil` to `errChan`.
 
 In normal operation, we would forward messages from `inputChan` to `outputChan` (or just make them point to the same channel object). However, to model the intervention of an attacker, we allow the attacker to receive ciphertexts from `inputChan`, modify them, and then forward them to `outputChan`. We also allow the attacker to receive error messages from `errChan`.
 
@@ -95,7 +95,7 @@ This setup is summarized in this flowchart:
 
 ![](ch27.png)
 
-All of these channels are unbuffered, so sending on them blocks. Thus, we run the sender, receiver, and attacker each in seperate goroutines. We use a `WaitGroup` to wait for all three goroutines to finish before exiting.
+All of these channels are unbuffered, so sending on them blocks. Thus, we run the sender, receiver, and attacker each in separate goroutines. We use a `WaitGroup` to wait for all three goroutines to finish before exiting.
 
 ### Uni-directional channels
 
@@ -109,4 +109,4 @@ type AttackerChans struct {
 }
 ```
 
-The cool thing about this is that even though the original channels are all bidirectional (since one actor sends to channel and another receives from it) the attacker function is only provided uni-directional references to these channels. For instance, the attacker can only receive from `InputChan` and can only send to `OutputChan`. This of course is no means to provide actual security; we are running everything in the same address space anyway so the boundaries between the sender/reciever/attacker are merely imaginary. Instead, this is moreso a nice way to help prevent _accidentally_ using the channels incorrectly in the attacker code.
+The cool thing about this is that even though the original channels are all bidirectional (since one actor sends to channel and another receives from it) the attacker function is only provided uni-directional references to these channels. For instance, the attacker can only receive from `InputChan` and can only send to `OutputChan`. This of course is no means to provide actual security; we are running everything in the same address space anyway so the boundaries between the sender/receiver/attacker are merely imaginary. Instead, this is moreso a nice way to help prevent _accidentally_ using the channels incorrectly in the attacker code.

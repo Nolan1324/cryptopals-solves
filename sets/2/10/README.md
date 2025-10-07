@@ -16,7 +16,7 @@
 
 ## Solution
 
-This challenge is fairly straightfoward to implement. I introduce a bit of notation here for CBC for later challenges write ups.
+This challenge is fairly straightforward to implement. I introduce a bit of notation here for CBC for later challenges writeups.
 
 Let $m$ be the current plaintext block, $c$ be the current ciphertext block, and $v$ be the previous ciphertext block (or the IV). Then the encrypt/decrypt functions for this block are:
 

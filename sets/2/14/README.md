@@ -32,7 +32,7 @@ If we can reduce the oracle $O(m) = E_\text{ECB}(p \mid\mid m \mid\mid t, k)$ to
 
 #### The reduction
 
-If we know the length of $p$ ($|p|$), then we can preform the reduction as follows. $\lfloor \frac{|p|}{s} \rfloor$ is the number of the final block containg bytes of $p$ ends. $|p| \bmod s$ is how many bytes of $p$ are in the final block of $p$. In order to "ignore" $p$ in the oracle, we will prepend $s - (|p| \bmod s)$ padding bytes to $m$, essentially "filling" the remaining bytes in the final $p$ block with padding. Then, after encrypting with $c := O(m)$, we will discard all the prefix ciphertext blocks (the blocks up to and including block number $\lfloor \frac{|p|}{s} \rfloor$). Thus, we get the reduction
+If we know the length of $p$ ($|p|$), then we can preform the reduction as follows. $\lfloor \frac{|p|}{s} \rfloor$ is the number of the block containing the final byte of $p$. $|p| \bmod s$ is how many bytes of $p$ are in the final block of $p$. In order to "ignore" $p$ in the oracle, we will prepend $s - (|p| \bmod s)$ padding bytes to $m$, essentially "filling" the remaining bytes in the final $p$ block with padding. Then, after encrypting with $c := O(m)$, we will discard all the prefix ciphertext blocks (the blocks up to and including block number $\lfloor \frac{|p|}{s} \rfloor$). Thus, we get the reduction
 
 $$O'(m) := O(s - (|p| \bmod s) \text{ padding bytes} \mid\mid m)_{s \left( \left\lfloor \frac{|p|}{s} \right\rfloor + 1 \right) :}$$
 

@@ -8,7 +8,7 @@ This challenge provides a list of ciphertexts and asks to detect which one was e
 
 ## Solution
 
-In AES ECB mode, each block is encrypted by the same key and algorithm. Thus, if two blocks are equal in the plaintext, then they are also equal in the ciphertext. Thus, if the ciphertext has duplicate, its likley it was encrypted with AES ECB. In this challenge, checking for duplicate blocks allows us to find which ciphertext was encrypted with AES ECB.
+In AES ECB mode, each block is encrypted by the same key and algorithm. Thus, if two blocks are equal in the plaintext, then they are also equal in the ciphertext. Thus, if the ciphertext has duplicate, its likely it was encrypted with AES ECB. In this challenge, checking for duplicate blocks allows us to find which ciphertext was encrypted with AES ECB.
 
 ## Commentary
 

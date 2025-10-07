@@ -14,7 +14,7 @@ O(c, v) = \mathrm{isPadValid}(D_\mathrm{CBC}(c, v, k))
 
 where $\mathrm{isPadValid}$ returns true iff the final plaintext block has valid PKCS7 padding. Valid PKCS7 padding is defined in my write-up for challenge 15.
 
-In my solution I only ever input a single block to the oracle,  so for simplicity we can write it as
+In my solution I only ever input a single block to the oracle, so for simplicity we can write it as
 
 ```math
 \begin{align*}

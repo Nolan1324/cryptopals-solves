@@ -14,7 +14,7 @@
 
 ## Overview
 
-This challenges provides a string that has been XOR'd by a single byte. We have to find the "key" (the single byte) that was used to encrypt the message, and then decrypt it.
+This challenge provides a string that has been XOR'd by a single byte. We have to find the "key" (the single byte) that was used to encrypt the message, and then decrypt it.
 
 ## Solution
 
@@ -26,13 +26,13 @@ With only 256 options, it is feasible to just look through all the decrypted str
 
 ### Score function
 
-The score function ultimately depends on what we expect the plaintext to look like. In this challenge, we expect the plaintext to be an English message composed of ASCII characters. Thus, the challenge recommends using character frequency as a score metric. For instance, the plaintext is likely to have more occurences of the character "e" than the character "q".
+The score function ultimately depends on what we expect the plaintext to look like. In this challenge, we expect the plaintext to be an English message composed of ASCII characters. Thus, the challenge recommends using character frequency as a score metric. For instance, the plaintext is likely to have more occurrences of the character "e" than the character "q".
 
 This idea can be formalized as a "histogram" that tracks how often each character occurs in the string. If we have an "expected" histogram based on the English language and an "observed" histogram calculated from the plaintext guess, we can compute how similar these histograms are to score the guess.
 
 #### Histogram representation
 
-I played around with a few different ways to represent histograms. Initially, I only built histograms on alphabetic characters. However, this made it difficult to score (probably bad) guesses that were mostly composed of non-alphabetic characters. I tried to ignore guesses that had "non-word looking" character, but this inadvertly caused the correct guess to sometimes be ignored in later challenges, such as if it contained the `\n` character. Ultimately, I found the best solution was to include all 128 ASCII characters in the histogram. Guesses with non-ASCII bytes (value >= 128) would be ignored. This allowed me to nicely represent the fact that non-word characters are less common but still possible. Now, a histogram is formally a 128-dimensional vector.
+I played around with a few different ways to represent histograms. Initially, I only built histograms on alphabetic characters. However, this made it difficult to score (probably bad) guesses that were mostly composed of non-alphabetic characters. I tried to ignore guesses that had "non-word looking" character, but this inadvertently caused the correct guess to sometimes be ignored in later challenges, such as if it contained the `\n` character. Ultimately, I found the best solution was to include all 128 ASCII characters in the histogram. Guesses with non-ASCII bytes (value >= 128) would be ignored. This allowed me to nicely represent the fact that non-word characters are less common but still possible. Now, a histogram is formally a 128-dimensional vector.
 
 #### Expected histogram computation
 

@@ -19,7 +19,7 @@
 
 SHA-1 is a hash algorithm. Hash functions deterministically compute a fixed size "digest" / "checksum" of their inputs. A checksum essentially acts as a "fingerprint" of a message, as the same message will always hash to the same checksum. It is possible for two different messages to hash to the same digest (called a "hash collision") but this becomes increasingly unlikely the larger the digest is. For instance, SHA-1 uses 20-byte / 160-bit digests, so the probability of two hashes colliding is $2^{-160}$ which is incredibly small (however, there are more advanced attacks to find SHA-1 hash collisions, and hence SHA-1 is considered insecure).
 
-Two key properties of a hash function are "avalanche effect" and non-invertible. The idea behind the avalanche effect is that if we change even one bit of the input to the hash function, many bits of the digest will change in an unpredictable (but deterministic) way. This makes the hash algorithm, in practice, "non-invertible" meaning that given the output digest, it is computationally intractible (but not impossible) to find a corresponding input.
+Two key properties of a hash function are "avalanche effect" and non-invertible. The idea behind the avalanche effect is that if we change even one bit of the input to the hash function, many bits of the digest will change in an unpredictable (but deterministic) way. This makes the hash algorithm, in practice, "non-invertible" meaning that given the output digest, it is computationally intractable (but not impossible) to find a corresponding input.
 
 ### The SHA-1 algorithm
 
@@ -27,7 +27,7 @@ SHA-1 is hash algorithm that produces a 20-byte / 160-bit digests. It operates o
 
 Internally, the 160-bit digest is represented as 5 32-bit "registers" which are used during computation. To produce the final digest, we simply represent each register in big-endian and then concatenate them into a byte sequence. Conversely, given the digest as a byte sequence, you could easily split it back into registers.
 
-Since SHA-1 operates on 512-bit blocks, if the input bit count is not divisible by 512, SHA-1 will pad the final block with MD padding. It does this by first appending a single `1` bit and then appending  `0` bits until the message is exactly 8 bytes shy of the end of the block. Then, it writes the (unpadded) message length (as a 64-bit integer in big-endian) into the final those 8 bytes, completing the final block.
+Since SHA-1 operates on 512-bit blocks, if the input bit count is not divisible by 512, SHA-1 will pad the final block with MD padding. It does this by first appending a single `1` bit and then appending `0` bits until the message is exactly 8 bytes shy of the end of the block. Then, it writes the (unpadded) message length (as a 64-bit integer in big-endian) into the final those 8 bytes, completing the final block.
 
 ### SHA-1 implementation
 
@@ -43,7 +43,7 @@ SHA1(key \mid\mid message)
 
 (which is **_incredibly_** insecure, as we will see in the next challenge)
 
-I make my MAC data structure take in an object implementing the  `hash.Hash` interface as input, so that we can easily swap out the hash algorithm in a later challenge. So my MAC implementation looks like this:
+I make my MAC data structure take in an object implementing the `hash.Hash` interface as input, so that we can easily swap out the hash algorithm in a later challenge. So my MAC implementation looks like this:
 
 ```go
 type Mac interface {

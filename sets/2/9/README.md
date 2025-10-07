@@ -18,7 +18,7 @@
 
 ## Solution
 
-This challenge is fairly straightfoward. I implemented a `AddPkcs7Padding` function to add the padding.
+This challenge is fairly straightforward. I implemented a `AddPkcs7Padding` function to add the padding.
 
 ### Semantics of `AddPkcs7Padding`
 

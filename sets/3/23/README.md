@@ -65,7 +65,7 @@ y_i & \text{otherwise}
 \end{cases}
 $$
 
-This is a recursive function because we can compute $x_i$ from $x_{i-s}$, which we compute from $x_{i-2s}$, etc until we reach some base case $x_j$ where $j < s$.
+This is a recursive function because we can compute $x_i$ from $x_{i-s}$, which we compute from $x_{i-2s}$, etc. until we reach some base case $x_j$ where $j < s$.
 
 We can also use this recursive function to compute $x$ from $y$ in an iterative fashion. Initialize $x_i = y_i$ for all $0 \leq i < s$. Then for $i = s$ to $31$, compute $x_i = y_i \oplus (x_{i-s} ~ \And ~ m_i)$. (Technically, this is dynamic programming!). Now we have a method to compute $x$ from $y$!
 

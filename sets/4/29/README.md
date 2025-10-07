@@ -159,7 +159,7 @@ We summarize this final result as follows:
 
 In other words, given a message $m$, its MAC, and the MAC key length, we fabricate a valid MAC for the message $m \mid\mid g \mid\mid e$.
 
-> An aside: I like doing this formalization because it allows us to see concretely how all the pieces fall into place. It also helps us to convince ourself that the properties of the attack are true, and it gives us a resource to look back to if we ever need to re-convince ourselves of these propreties.
+> An aside: I like doing this formalization because it allows us to see concretely how all the pieces fall into place. It also helps us to convince ourselves that the properties of the attack are true, and it gives us a resource to look back to if we ever need to re-convince ourselves of these properties.
 
 ### Attack implementation
 
@@ -206,4 +206,4 @@ We then pass both the new message (including the glue padding in the middle) and
 ## Commentary
 
 I think this attack is an interesting example where a specific use of a cryptographic algorithm seems secure with an understanding of the basic properties of that algorithm, but it falls apart once you know more details about the algorithm. Namely, it seems like the 
-"avalance effect" and "non-invertible" properties of SHA-1 would make it so the digest $c := \text{SHA-1}(k \mid\mid m)$ can only be computed if you know $k$, and that if you are given just $m$ and $c$ there is no tractible way to reverse information about $k$ or produce your own hash $c' := \text{SHA-1}(k \mid\mid m')$. However, once you know that when SHA-1 consumes each message block, it computes the new digest from the previous digest, it becomes very clear that you can just use $c$ as the initial digest and keep hashing more message data to get $c'$.
+"avalanche effect" and "non-invertible" properties of SHA-1 would make it so the digest $c := \text{SHA-1}(k \mid\mid m)$ can only be computed if you know $k$, and that if you are given just $m$ and $c$ there is no tractable way to reverse information about $k$ or produce your own hash $c' := \text{SHA-1}(k \mid\mid m')$. However, once you know that when SHA-1 consumes each message block, it computes the new digest from the previous digest, it becomes very clear that you can just use $c$ as the initial digest and keep hashing more message data to get $c'$.

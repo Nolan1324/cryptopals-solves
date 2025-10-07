@@ -47,7 +47,7 @@ $$
 
 Combining this with the other properties, this means that XORing by the same value $a$ twice is equivalent to never XORing at all. This holds true even if we XOR by other values in the middle, thanks to associativity and commutativity. For instance, $x \oplus (y \oplus a) \oplus (z \oplus a) = x \oplus y \oplus z$.
 
-We see in later challenges that this allows us to view XOR as a "self-inverting" operator; if we XOR something by `a`, we can undo/invert this operation by simplying XORing it by `a` again.
+We see in later challenges that this allows us to view XOR as a "self-inverting" operator; if we XOR something by `a`, we can undo/invert this operation by simply XORing it by `a` again.
 
 ## Implementation
 
