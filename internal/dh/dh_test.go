@@ -31,3 +31,8 @@ func TestShared(t *testing.T) {
 		t.Fatalf("expected shared key %v, got %v", expectedSharedKey, sharedKey)
 	}
 }
+
+func TestNistConstructor(t *testing.T) {
+	// ensure no panic occurs
+	MakeNistDiffeHellman()
+}

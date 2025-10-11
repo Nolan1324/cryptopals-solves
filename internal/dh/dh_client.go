@@ -1,5 +1,7 @@
 package dh
 
+import "math/big"
+
 // DiffeHellmanClient is a client of a Diffe-Hellman key exchange that holds its own private and public key
 type DiffeHellmanClient struct {
 	diffeHellman DiffeHellman
@@ -30,4 +32,14 @@ func (c DiffeHellmanClient) PublicKey() PublicKey {
 // SharedKey computes the shared key from the other parties public key
 func (c DiffeHellmanClient) SharedKey(remotePublicKey PublicKey) SharedKey {
 	return c.diffeHellman.SharedKey(c.privateKey, remotePublicKey)
+}
+
+// G is generator parameter
+func (c DiffeHellmanClient) G() *big.Int {
+	return c.diffeHellman.G()
+}
+
+// P is generator parameter
+func (c DiffeHellmanClient) P() *big.Int {
+	return c.diffeHellman.P()
 }

@@ -2,6 +2,8 @@ package dh
 
 import (
 	crand "crypto/rand"
+	"cryptopals/internal/hashx/sha1x"
+	"fmt"
 	"math/big"
 )
 
@@ -12,7 +14,8 @@ const (
 		"6f44c42e9a637ed6b0bff5cb6f406b7edee386bfb5a899fa5ae9f" +
 		"24117c4b1fe649286651ece45b3dc2007cb8a163bf0598da48361" +
 		"c55d39a69163fa8fd24cf5f83655d23dca3ad961c62f356208552" +
-		"bb9ed529077096966d670c354e4abc9804f1746c08ca237327fff"
+		"bb9ed529077096966d670c354e4abc9804f1746c08ca237327fff" +
+		"fffffffffffff"
 )
 
 var pNist *big.Int
@@ -40,16 +43,17 @@ func initPNist() {
 }
 
 // MakeDiffeHellman configures a Diffe-Hellman key exchange instance with the provided parameters.
+// p must be prime
 func MakeDiffeHellman(p *big.Int, g *big.Int) DiffeHellman {
 	if !p.ProbablyPrime(100) {
-		panic("p is not prime")
+		panic(fmt.Sprintf("p=%v is not prime", p))
 	}
 	return DiffeHellman{p: p, g: g}
 }
 
 // MakeDiffeHellman configures a Diffe-Hellman key exchange instance with the standard secure NIST parameters.
 func MakeNistDiffeHellman() DiffeHellman {
-	return DiffeHellman{p: pNist, g: big.NewInt(2)}
+	return MakeDiffeHellman(pNist, big.NewInt(2))
 }
 
 // PublicKey computes a client's public key from their private key
@@ -81,4 +85,10 @@ func (d DiffeHellman) G() *big.Int {
 // P is the modulo parameter for the Diffe-Hellman key exchange
 func (d DiffeHellman) P() *big.Int {
 	return d.p
+}
+
+// ToAesKey converts a Diffe-Hellman shared key to an AES key of length 16
+func ToAesKey(sharedKey SharedKey) []byte {
+	sum := sha1x.Sum(sharedKey.Bytes())
+	return sum[0:16]
 }
