@@ -18,10 +18,7 @@ func MakeClient(diffeHellman DiffeHellman, privateKey PrivateKey) DiffeHellmanCl
 
 // DiffeHellmanClient makes a clent for a Diffe-Hellman key exchange with a random private key, given the parameters
 func MakeClientWithRandomKey(diffeHellman DiffeHellman) DiffeHellmanClient {
-	privateKey, err := diffeHellman.RandomPrivateKey()
-	if err != nil {
-		panic(err)
-	}
+	privateKey := diffeHellman.RandomPrivateKey()
 	return MakeClient(diffeHellman, privateKey)
 }
 

@@ -63,9 +63,14 @@ func (d DiffeHellman) SharedKey(privateKey PrivateKey, remotePublicKey PublicKey
 }
 
 // Generate a secure random private key for this Diffe-Hellman key exchange
-// Returns an error if there is an issue reading from the OS's random number generator.
-func (d DiffeHellman) RandomPrivateKey() (PrivateKey, error) {
-	return crand.Int(crand.Reader, d.p)
+// Panics if there is an issue reading from the OS's random number generator.
+func (d DiffeHellman) RandomPrivateKey() PrivateKey {
+	key, err := crand.Int(crand.Reader, d.p)
+	// Go documentation states this error should always be nil, but panic just in case.
+	if err != nil {
+		panic(err)
+	}
+	return key
 }
 
 // G is generator parameter for the Diffe-Hellman key exchange
