@@ -12,14 +12,12 @@ func TestSimDefault(t *testing.T) {
 
 	messageToSend := []byte("hello world")
 
-	clientAReturn := make(chan []byte)
-	var wg sync.WaitGroup
+	var messageReturned []byte
 
-	wg.Go(func() { defer close(clientAReturn); clientAReturn <- sim.RunClientA(messageToSend) })
+	var wg sync.WaitGroup
+	wg.Go(func() { messageReturned = sim.RunClientA(messageToSend) })
 	wg.Go(sim.RunClientB)
 	wg.Go(func() { sim.AttackerChannels().Passthrough(context.Background()) })
-
-	messageReturned := <-clientAReturn
 	wg.Wait()
 
 	if !bytes.Equal(messageToSend, messageReturned) {
