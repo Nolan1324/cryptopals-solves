@@ -184,20 +184,20 @@ func (c AttackerChannels[T]) Passthrough(ctx context.Context) {
 When creating and using the simulation, deadlock may occur if not done properly. Suppose we create it with `MakeSimulation[int](0)` so that the channels have capacity `0`, and suppose we implement the clients as follows:
 
 ```go
-func clientA(sim Simulation[int]) {
+func runClientA(sim Simulation[int]) {
 	send, recv := sim.ClientAChannels()
 	send <- 43
 	x := <-recv
 }
 
-func clientA(sim Simulation[int]) {
+func runClientB(sim Simulation[int]) {
 	send, recv := sim.ClientBChannels()
 	send <- 57
 	x := <-recv
 }
 ```
 
-Since the channels have capacity 0, sending will block until the other side reads the value. Thus, the following interleaving will deadlock:
+Since the channels have capacity 0, sending will block until the other side reads the value. Thus, deadlock will occur as such:
 
 ```
 A: send <- 43 (waiting on A to read)
@@ -207,13 +207,13 @@ B: send <- 57 (waiting on B to read)
 There are multiple ways to solve this. One is to order the sends and reads to prevent wait-for cycles, like so
 
 ```go
-func clientA(sim Simulation[int]) {
+func runClientA(sim Simulation[int]) {
 	send, recv := sim.ClientAChannels()
 	send <- 43
 	x := <-recv
 }
 
-func clientA(sim Simulation[int]) {
+func runClientB(sim Simulation[int]) {
 	send, recv := sim.ClientBChannels()
 	x := <-recv
 	send <- 57
@@ -225,7 +225,7 @@ Another method is to increase the channel capacity so that sending does not bloc
 Finally, we could also solve the deadlock by wrapping each send in a Goroutine.
 
 ```go
-func clientA(sim Simulation[int]) {
+func runClientA(sim Simulation[int]) {
 	send, recv := sim.ClientAChannels()
 	go func() {
 		send <- 43
@@ -233,7 +233,7 @@ func clientA(sim Simulation[int]) {
 	x := <-recv
 }
 
-func clientA(sim Simulation[int]) {
+func runClientB(sim Simulation[int]) {
 	send, recv := sim.ClientBChannels()
 	go func() {
 		send <- 57
@@ -242,7 +242,7 @@ func clientA(sim Simulation[int]) {
 }
 ```
 
-This effectively allows us to model asynchronous communication, rather than synchronous communication. However, in more complex scenarios, this "fire-and-forget" pattern could prove problematic, as Goroutines that were launched in the past may cause unexpected results in the future.
+This effectively allows us to model asynchronous communication, rather than synchronous communication. However, in more complex scenarios, this "fire-and-forget" pattern could prove problematic, as goroutines that were launched in the past may cause unexpected results in the future.
 
 ### Modelling this challenge
 
