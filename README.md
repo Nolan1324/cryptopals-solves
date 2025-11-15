@@ -49,3 +49,8 @@ Set 4
 30. [Break an MD4 keyed MAC using length extension](sets/4/30)
 31. [Implement and break HMAC-SHA1 with an artificial timing leak](sets/4/31)
 32. [Break HMAC-SHA1 with a slightly less artificial timing leak](sets/4/32)
+
+Set 5
+
+33. [Implement Diffie-Hellman](sets/5/33)
+34. [Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection](sets/5/34)
