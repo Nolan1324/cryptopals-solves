@@ -20,13 +20,13 @@ type Message interface {
 type KeyExchangeRequest struct {
 	P         *big.Int
 	G         *big.Int
-	PublicKey *big.Int
+	PublicKey dh.PublicKey
 }
 
 // KeyExchangeResponse is a response to a key exchange,
 // containing the responder's public key.
 type KeyExchangeResponse struct {
-	PublicKey *big.Int
+	PublicKey dh.PublicKey
 }
 
 // EncryptedMessage is messaged encrypted with AES-CBC using the,
@@ -79,7 +79,7 @@ func runClientAKeyExchange(send chan<- Message, recv <-chan Message) dh.SharedKe
 	log.Println("Client A reading key exchange response")
 	response, ok := (<-recv).(KeyExchangeResponse)
 	if !ok {
-		panic("Client B set invalid response type")
+		panic("client B set invalid response type")
 	}
 	return dhClient.SharedKey(response.PublicKey)
 }
@@ -102,7 +102,7 @@ func runClientBKeyExchange(send chan<- Message, recv <-chan Message) dh.SharedKe
 	log.Println("Client B reading key exchange request")
 	request, ok := (<-recv).(KeyExchangeRequest)
 	if !ok {
-		panic("Other party set invalid request type")
+		panic("client A sent invalid request type")
 	}
 	dhClient := dh.MakeClientWithRandomKey(dh.MakeDiffeHellman(request.P, request.G))
 	sharedKey := dhClient.SharedKey(request.PublicKey)

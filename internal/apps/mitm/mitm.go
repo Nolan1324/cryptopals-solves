@@ -1,6 +1,8 @@
 package mitm
 
-import "context"
+import (
+	"context"
+)
 
 type Simulation[T any] struct {
 	outgoingA chan T
