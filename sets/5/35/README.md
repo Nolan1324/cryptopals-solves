@@ -36,9 +36,9 @@ If $g = 0$, then $A = 0^a = 0$ and $B = 0^b = 0$ (under $\mod{p}$). So $K_a = B 
 
 ### Attack 3
 
-If $g = p - 1$, then $A = (p-1)^a = (-1)^a$ and $B = (p-1)^b = (-1)^b$ (under $\mod{p}$). So $K_a = B ^ a = (-1)^{ab}$ and $K_a = B ^ a = (-1)^{ab}$. So $K = 1$ if $ab$ is even and $K = -1 = p - 1$ if $ab$ is odd. Thus, the attacker can decrypt the intercepted messages by trying both $1$ and $p-1$ as the key and inspecting the output.
+If $g = p - 1$, then $A = (p-1)^a = (-1)^a$ and $B = (p-1)^b = (-1)^b$ (under $\mod{p}$). So $K_a = B ^ a = (-1)^{ab}$ and $K_b = A ^ b = (-1)^{ab}$. So $K = 1$ if $ab$ is even and $K = -1 = p - 1$ if $ab$ is odd. Thus, the attacker can decrypt the intercepted messages by trying both $1$ and $p-1$ as the key and inspecting the output.
 
-While just trying both possibilities for the key will work, we can also see which is more likely as an exercise. $a$ and $b$ are generated uniformly at random, so each is odd w.p. (with probability) $1/2$. $ab$ is odd iff $a$ and $b$ are odd, so $ab$ is odd w.p. $1/2 + 1/2 = 1/4$. Thus, $K=1$ w.p. $0.75$ and $K = p - 1$ w.p. $0.25$.
+While just trying both possibilities for the key will work, we can also see which is more likely as an exercise. $a$ and $b$ are generated uniformly at random, so each is odd w.p. (with probability) $1/2$. $ab$ is odd iff $a$ and $b$ are both odd, so $ab$ is odd w.p. $1/2 + 1/2 = 1/4$. Thus, $K=1$ w.p. $0.75$ and $K = p - 1$ w.p. $0.25$.
 
 ## Modelling the attacks
 
